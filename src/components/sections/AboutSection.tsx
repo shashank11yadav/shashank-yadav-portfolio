@@ -1,0 +1,157 @@
+'use client';
+
+import { motion } from 'framer-motion';
+import { useInView } from 'react-intersection-observer';
+import { personalInfo } from '@/data/portfolio';
+
+export default function AboutSection() {
+  const [ref, inView] = useInView({
+    threshold: 0.3,
+    triggerOnce: true,
+  });
+
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.3,
+      },
+    },
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 30 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.8 },
+    },
+  };
+
+  return (
+    <section id="about" className="py-20 px-6">
+      <div className="max-w-6xl mx-auto">
+        <motion.div
+          ref={ref}
+          variants={containerVariants}
+          initial="hidden"
+          animate={inView ? "visible" : "hidden"}
+          className="grid lg:grid-cols-2 gap-12 items-center"
+        >
+          {/* Left side - Text content */}
+          <motion.div variants={itemVariants} className="space-y-6">
+            <motion.h2 
+              variants={itemVariants}
+              className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent"
+            >
+              About Me
+            </motion.h2>
+            
+            <motion.p 
+              variants={itemVariants}
+              className="text-lg text-gray-300 leading-relaxed"
+            >
+              {personalInfo.bio}
+            </motion.p>
+
+            <motion.div variants={itemVariants} className="space-y-4">
+              <h3 className="text-xl font-semibold text-cyan-400">What I Do</h3>
+              <div className="grid sm:grid-cols-2 gap-4">
+                <div className="p-4 bg-slate-800/50 rounded-lg backdrop-blur-sm border border-slate-700">
+                  <h4 className="font-semibold text-purple-400 mb-2">🚀 Full-Stack Development</h4>
+                  <p className="text-sm text-gray-400">Building scalable web applications with modern frameworks</p>
+                </div>
+                <div className="p-4 bg-slate-800/50 rounded-lg backdrop-blur-sm border border-slate-700">
+                  <h4 className="font-semibold text-cyan-400 mb-2">🤖 AI/ML Solutions</h4>
+                  <p className="text-sm text-gray-400">Creating intelligent systems and machine learning models</p>
+                </div>
+                <div className="p-4 bg-slate-800/50 rounded-lg backdrop-blur-sm border border-slate-700">
+                  <h4 className="font-semibold text-green-400 mb-2">☁️ Cloud Architecture</h4>
+                  <p className="text-sm text-gray-400">Designing and deploying cloud-native applications</p>
+                </div>
+                <div className="p-4 bg-slate-800/50 rounded-lg backdrop-blur-sm border border-slate-700">
+                  <h4 className="font-semibold text-yellow-400 mb-2">🎨 UI/UX Design</h4>
+                  <p className="text-sm text-gray-400">Creating beautiful and intuitive user experiences</p>
+                </div>
+              </div>
+            </motion.div>
+
+            <motion.div variants={itemVariants}>
+              <a
+                href={personalInfo.resume}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-cyan-500 to-purple-500 rounded-lg font-semibold hover:from-cyan-400 hover:to-purple-400 transition-all duration-300 transform hover:scale-105"
+              >
+                📄 Download Resume
+              </a>
+            </motion.div>
+          </motion.div>
+
+          {/* Right side - Interactive stats */}
+          <motion.div variants={itemVariants} className="space-y-6">
+            <div className="bg-slate-800/30 backdrop-blur-sm rounded-2xl p-8 border border-slate-700">
+              <h3 className="text-2xl font-bold mb-6 text-center bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent">
+                Quick Stats
+              </h3>
+              
+              <div className="grid grid-cols-2 gap-6">
+                <motion.div 
+                  className="text-center"
+                  whileHover={{ scale: 1.05 }}
+                  transition={{ type: "spring", stiffness: 300 }}
+                >
+                  <div className="text-3xl font-bold text-cyan-400 mb-2">3+</div>
+                  <div className="text-sm text-gray-400">Years Experience</div>
+                </motion.div>
+                
+                <motion.div 
+                  className="text-center"
+                  whileHover={{ scale: 1.05 }}
+                  transition={{ type: "spring", stiffness: 300 }}
+                >
+                  <div className="text-3xl font-bold text-purple-400 mb-2">50+</div>
+                  <div className="text-sm text-gray-400">Projects Built</div>
+                </motion.div>
+                
+                <motion.div 
+                  className="text-center"
+                  whileHover={{ scale: 1.05 }}
+                  transition={{ type: "spring", stiffness: 300 }}
+                >
+                  <div className="text-3xl font-bold text-green-400 mb-2">25+</div>
+                  <div className="text-sm text-gray-400">Technologies</div>
+                </motion.div>
+                
+                <motion.div 
+                  className="text-center"
+                  whileHover={{ scale: 1.05 }}
+                  transition={{ type: "spring", stiffness: 300 }}
+                >
+                  <div className="text-3xl font-bold text-yellow-400 mb-2">100+</div>
+                  <div className="text-sm text-gray-400">Commits/Month</div>
+                </motion.div>
+              </div>
+
+              {/* Tech interests */}
+              <div className="mt-8 pt-6 border-t border-slate-600">
+                <h4 className="text-lg font-semibold mb-4 text-center">Current Interests</h4>
+                <div className="flex flex-wrap gap-2 justify-center">
+                  {['Next.js', 'TypeScript', 'AI/ML', 'Web3', 'Cloud Native'].map((tech) => (
+                    <span
+                      key={tech}
+                      className="px-3 py-1 bg-gradient-to-r from-cyan-500/20 to-purple-500/20 text-sm rounded-full border border-cyan-400/30"
+                    >
+                      {tech}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        </motion.div>
+      </div>
+    </section>
+  );
+}
