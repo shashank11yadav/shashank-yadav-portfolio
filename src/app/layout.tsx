@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { Toaster } from "sonner";
+import Terminal from "@/components/terminal/Terminal";
 import "./globals.css";
 
 const inter = Inter({
@@ -50,6 +51,7 @@ export default function RootLayout({
     <html lang="en" className="dark scroll-smooth" suppressHydrationWarning>
       <body className={`${inter.className} antialiased`}>
         {children}
+        <Terminal />
         <Toaster 
           position="top-right"
           theme="dark"
