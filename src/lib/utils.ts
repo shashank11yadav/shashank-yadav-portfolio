@@ -59,3 +59,8 @@ export function throttle<T extends (...args: any[]) => void>(
     }
   };
 }
+
+export function getAssetPath(path: string): string {
+  const basePath = process.env.CUSTOM_BASE_PATH || '';
+  return `${basePath}${path}`;
+}

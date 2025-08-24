@@ -5,6 +5,7 @@ import { ChevronDown, Github, Linkedin, Mail, MapPin, Code, Twitter, Instagram }
 import TerminalText from '@/components/animations/TerminalText';
 import FloatingElements from '@/components/3d/FloatingElements';
 import { personalInfo } from '@/data/portfolio';
+import { getAssetPath } from '@/lib/utils';
 
 const terminalLines = [
   'npm install awesome-developer',
@@ -50,7 +51,7 @@ export default function HeroSection() {
             >
               <div className="w-full h-full rounded-full bg-slate-900 overflow-hidden relative">
                 <img
-                  src={personalInfo.avatar}
+                  src={getAssetPath(personalInfo.avatar)}
                   alt={personalInfo.name}
                   className="w-full h-full object-cover rounded-full absolute inset-0 z-20"
                   onError={(e) => {
