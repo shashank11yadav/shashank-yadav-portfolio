@@ -7,7 +7,7 @@ import { personalInfo, experiences, projects, skills } from '@/data/portfolio';
 
 interface Command {
   input: string;
-  output: string | JSX.Element;
+  output: string | React.ReactElement;
   timestamp: Date;
 }
 
@@ -815,7 +815,7 @@ export default function Terminal() {
     const commandName = parts[0].toLowerCase();
     const args = parts.slice(1);
 
-    let output: string | JSX.Element = '';
+    let output: string | React.ReactElement = '';
 
     if (commandName === 'clear') {
       setState(prev => ({ ...prev, history: [], input: '' }));
