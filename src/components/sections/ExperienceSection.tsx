@@ -19,7 +19,7 @@ function ExperienceCard({ experience, index }: { experience: any; index: number 
         <div className="w-12 h-12 bg-gradient-to-r from-cyan-500 to-purple-500 rounded-full flex items-center justify-center z-10">
           <Building size={20} className="text-white" />
         </div>
-        {index < experiences.length - 1 && (
+        {index < experiences.length && (
           <div className="w-0.5 h-24 bg-gradient-to-b from-cyan-500 to-purple-500 mt-4" />
         )}
       </div>
@@ -114,19 +114,39 @@ export default function ExperienceSection() {
           className="mt-16 bg-slate-800/30 backdrop-blur-sm rounded-2xl p-8 border border-slate-700"
         >
           <h3 className="text-2xl font-bold mb-6 text-center">Career Highlights</h3>
-          <div className="grid md:grid-cols-3 gap-6">
-            <div className="text-center">
-              <div className="text-3xl font-bold text-cyan-400 mb-2">1700+</div>
-              <div className="text-sm text-gray-400">Files Managed</div>
-            </div>
-            <div className="text-center">
-              <div className="text-3xl font-bold text-purple-400 mb-2">35%</div>
-              <div className="text-sm text-gray-400">Performance Increase</div>
-            </div>
-            <div className="text-center">
-              <div className="text-3xl font-bold text-green-400 mb-2">70+</div>
-              <div className="text-sm text-gray-400">Students Mentored</div>
-            </div>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            <motion.div 
+              className="text-center"
+              whileHover={{ scale: 1.05 }}
+              transition={{ type: "spring", stiffness: 300 }}
+            >
+              <div className="text-3xl font-bold text-cyan-400 mb-2">25+</div>
+              <div className="text-sm text-gray-400">LLM Providers</div>
+            </motion.div>
+            <motion.div 
+              className="text-center"
+              whileHover={{ scale: 1.05 }}
+              transition={{ type: "spring", stiffness: 300 }}
+            >
+              <div className="text-3xl font-bold text-purple-400 mb-2">20GB</div>
+              <div className="text-sm text-gray-400">Zero-Downtime Migration</div>
+            </motion.div>
+            <motion.div 
+              className="text-center"
+              whileHover={{ scale: 1.05 }}
+              transition={{ type: "spring", stiffness: 300 }}
+            >
+              <div className="text-3xl font-bold text-green-400 mb-2">99.9%</div>
+              <div className="text-sm text-gray-400">System Uptime</div>
+            </motion.div>
+            <motion.div 
+              className="text-center"
+              whileHover={{ scale: 1.05 }}
+              transition={{ type: "spring", stiffness: 300 }}
+            >
+              <div className="text-3xl font-bold text-yellow-400 mb-2">25%</div>
+              <div className="text-sm text-gray-400">Cost Reduction</div>
+            </motion.div>
           </div>
         </motion.div>
       </div>

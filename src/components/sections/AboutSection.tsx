@@ -77,7 +77,11 @@ export default function AboutSection() {
               </div>
             </motion.div>
 
-            <motion.div variants={itemVariants}>
+          </motion.div>
+
+          {/* Right side - Interactive stats */}
+          <motion.div variants={itemVariants} className="space-y-6">
+            <motion.div variants={itemVariants} className="flex justify-center lg:justify-end">
               <a
                 href={personalInfo.resume}
                 target="_blank"
@@ -87,10 +91,6 @@ export default function AboutSection() {
                 📄 Download Resume
               </a>
             </motion.div>
-          </motion.div>
-
-          {/* Right side - Interactive stats */}
-          <motion.div variants={itemVariants} className="space-y-6">
             <div className="bg-slate-800/30 backdrop-blur-sm rounded-2xl p-8 border border-slate-700">
               <h3 className="text-2xl font-bold mb-6 text-center bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent">
                 Quick Stats
@@ -102,8 +102,8 @@ export default function AboutSection() {
                   whileHover={{ scale: 1.05 }}
                   transition={{ type: "spring", stiffness: 300 }}
                 >
-                  <div className="text-3xl font-bold text-cyan-400 mb-2">3+</div>
-                  <div className="text-sm text-gray-400">Years Experience</div>
+                  <div className="text-3xl font-bold text-cyan-400 mb-2">3.8</div>
+                  <div className="text-sm text-gray-400">Master's GPA</div>
                 </motion.div>
                 
                 <motion.div 
@@ -111,8 +111,8 @@ export default function AboutSection() {
                   whileHover={{ scale: 1.05 }}
                   transition={{ type: "spring", stiffness: 300 }}
                 >
-                  <div className="text-3xl font-bold text-purple-400 mb-2">50+</div>
-                  <div className="text-sm text-gray-400">Projects Built</div>
+                  <div className="text-3xl font-bold text-purple-400 mb-2">700+</div>
+                  <div className="text-sm text-gray-400">LeetCode Problems</div>
                 </motion.div>
                 
                 <motion.div 
@@ -120,8 +120,8 @@ export default function AboutSection() {
                   whileHover={{ scale: 1.05 }}
                   transition={{ type: "spring", stiffness: 300 }}
                 >
-                  <div className="text-3xl font-bold text-green-400 mb-2">25+</div>
-                  <div className="text-sm text-gray-400">Technologies</div>
+                  <div className="text-3xl font-bold text-green-400 mb-2">35%</div>
+                  <div className="text-sm text-gray-400">Performance Boost</div>
                 </motion.div>
                 
                 <motion.div 
@@ -129,16 +129,16 @@ export default function AboutSection() {
                   whileHover={{ scale: 1.05 }}
                   transition={{ type: "spring", stiffness: 300 }}
                 >
-                  <div className="text-3xl font-bold text-yellow-400 mb-2">100+</div>
-                  <div className="text-sm text-gray-400">Commits/Month</div>
+                  <div className="text-3xl font-bold text-yellow-400 mb-2">99.9%</div>
+                  <div className="text-sm text-gray-400">System Uptime</div>
                 </motion.div>
               </div>
 
-              {/* Tech interests */}
+              {/* Learning new things */}
               <div className="mt-8 pt-6 border-t border-slate-600">
-                <h4 className="text-lg font-semibold mb-4 text-center">Current Interests</h4>
+                <h4 className="text-lg font-semibold mb-4 text-center">Learning new things</h4>
                 <div className="flex flex-wrap gap-2 justify-center">
-                  {['Next.js', 'TypeScript', 'AI/ML', 'Web3', 'Cloud Native'].map((tech) => (
+                  {['WebAssembly', 'Retrieval-Augmented Generation', 'Kubernetes', 'Vector Databases', 'LangChain'].map((tech) => (
                     <span
                       key={tech}
                       className="px-3 py-1 bg-gradient-to-r from-cyan-500/20 to-purple-500/20 text-sm rounded-full border border-cyan-400/30"

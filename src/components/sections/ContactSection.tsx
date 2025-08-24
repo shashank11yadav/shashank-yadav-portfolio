@@ -3,8 +3,9 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
-import { Mail, Phone, MapPin, Github, Linkedin, Twitter, Send, MessageSquare } from 'lucide-react';
+import { Mail, Phone, MapPin, Github, Linkedin, Twitter, Send, MessageSquare, Instagram, Code } from 'lucide-react';
 import { toast } from 'sonner';
+import emailjs from '@emailjs/browser';
 import { personalInfo } from '@/data/portfolio';
 
 export default function ContactSection() {
@@ -16,6 +17,11 @@ export default function ContactSection() {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  // EmailJS configuration from old portfolio
+  const SERVICE_ID = "service_vzx1309";
+  const TEMPLATE_ID = "template_38052va";
+  const USER_ID = "16wFkhh9-QEl71Ass";
+
   const [ref, inView] = useInView({
     threshold: 0.2,
     triggerOnce: true,
@@ -25,15 +31,37 @@ export default function ContactSection() {
     e.preventDefault();
     setIsSubmitting(true);
 
-    // Simulate form submission
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    
-    toast.success('Message sent successfully! I\'ll get back to you soon.', {
-      duration: 5000,
+    // Show loading toast
+    const loadingToast = toast.loading("Sending message...", {
+      duration: Infinity,
     });
-    
-    setFormData({ name: '', email: '', subject: '', message: '' });
-    setIsSubmitting(false);
+
+    try {
+      await emailjs.sendForm(SERVICE_ID, TEMPLATE_ID, e.target as HTMLFormElement, USER_ID);
+
+      // Clear form
+      setFormData({
+        name: '',
+        email: '',
+        subject: '',
+        message: '',
+      });
+
+      // Dismiss loading and show success
+      toast.dismiss(loadingToast);
+      toast.success("Message successfully sent! 🚀", {
+        duration: 4000,
+      });
+    } catch (error) {
+      // Dismiss loading and show error
+      toast.dismiss(loadingToast);
+      toast.error("Failed to send message. Please try again.", {
+        duration: 4000,
+      });
+      console.error("Email sending failed:", error);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -61,118 +89,28 @@ export default function ContactSection() {
           </p>
         </motion.div>
 
-        <div className="grid lg:grid-cols-2 gap-12 items-start">
-          {/* Contact Info */}
-          <motion.div
-            initial={{ opacity: 0, x: -30 }}
-            animate={inView ? { opacity: 1, x: 0 } : { opacity: 0, x: -30 }}
+        {/* Contact Form */}
+        <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
             transition={{ delay: 0.2, duration: 0.8 }}
-            className="space-y-8"
+            className="max-w-2xl mx-auto"
           >
-            <div>
-              <h3 className="text-2xl font-bold mb-6">Get in Touch</h3>
-              <p className="text-gray-300 mb-8">
-                I'm always interested in hearing about new projects and opportunities. 
-                Whether you have a question or just want to say hi, feel free to reach out!
-              </p>
-            </div>
-
-            {/* Contact methods */}
-            <div className="space-y-6">
-              <motion.a
-                href={`mailto:${personalInfo.contact.email}`}
-                whileHover={{ scale: 1.02, x: 10 }}
-                className="flex items-center gap-4 p-4 bg-slate-800/50 backdrop-blur-sm rounded-xl border border-slate-700 hover:border-cyan-400/50 transition-all duration-300"
-              >
-                <div className="p-3 bg-cyan-500/20 rounded-full">
-                  <Mail className="text-cyan-400" size={24} />
+            <div className="bg-gradient-to-br from-slate-800/60 via-slate-800/40 to-slate-900/60 backdrop-blur-xl rounded-3xl p-8 border border-slate-600/50 shadow-2xl">
+              <div className="text-center mb-8">
+                <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-cyan-500/20 to-purple-500/20 rounded-full border border-cyan-400/30 mb-4">
+                  <MessageSquare className="text-cyan-400" size={28} />
                 </div>
-                <div>
-                  <div className="font-semibold text-white">Email</div>
-                  <div className="text-gray-400">{personalInfo.contact.email}</div>
-                </div>
-              </motion.a>
-
-              {personalInfo.contact.phone && (
-                <motion.a
-                  href={`tel:${personalInfo.contact.phone}`}
-                  whileHover={{ scale: 1.02, x: 10 }}
-                  className="flex items-center gap-4 p-4 bg-slate-800/50 backdrop-blur-sm rounded-xl border border-slate-700 hover:border-purple-400/50 transition-all duration-300"
-                >
-                  <div className="p-3 bg-purple-500/20 rounded-full">
-                    <Phone className="text-purple-400" size={24} />
-                  </div>
-                  <div>
-                    <div className="font-semibold text-white">Phone</div>
-                    <div className="text-gray-400">{personalInfo.contact.phone}</div>
-                  </div>
-                </motion.a>
-              )}
-
-              <motion.div
-                whileHover={{ scale: 1.02, x: 10 }}
-                className="flex items-center gap-4 p-4 bg-slate-800/50 backdrop-blur-sm rounded-xl border border-slate-700"
-              >
-                <div className="p-3 bg-green-500/20 rounded-full">
-                  <MapPin className="text-green-400" size={24} />
-                </div>
-                <div>
-                  <div className="font-semibold text-white">Location</div>
-                  <div className="text-gray-400">{personalInfo.contact.location}</div>
-                </div>
-              </motion.div>
-            </div>
-
-            {/* Social links */}
-            <div>
-              <h4 className="text-lg font-semibold mb-4">Connect on Social</h4>
-              <div className="flex gap-4">
-                <motion.a
-                  href={personalInfo.contact.social.github}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  whileHover={{ scale: 1.1, rotate: 5 }}
-                  className="p-3 bg-slate-800 rounded-full hover:bg-slate-700 transition-colors"
-                >
-                  <Github size={24} />
-                </motion.a>
-                <motion.a
-                  href={personalInfo.contact.social.linkedin}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  whileHover={{ scale: 1.1, rotate: 5 }}
-                  className="p-3 bg-slate-800 rounded-full hover:bg-slate-700 transition-colors"
-                >
-                  <Linkedin size={24} />
-                </motion.a>
-                {personalInfo.contact.social.twitter && (
-                  <motion.a
-                    href={personalInfo.contact.social.twitter}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    whileHover={{ scale: 1.1, rotate: 5 }}
-                    className="p-3 bg-slate-800 rounded-full hover:bg-slate-700 transition-colors"
-                  >
-                    <Twitter size={24} />
-                  </motion.a>
-                )}
-              </div>
-            </div>
-          </motion.div>
-
-          {/* Contact Form */}
-          <motion.div
-            initial={{ opacity: 0, x: 30 }}
-            animate={inView ? { opacity: 1, x: 0 } : { opacity: 0, x: 30 }}
-            transition={{ delay: 0.4, duration: 0.8 }}
-          >
-            <div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl p-8 border border-slate-700">
-              <div className="flex items-center gap-3 mb-6">
-                <MessageSquare className="text-cyan-400" size={24} />
-                <h3 className="text-xl font-bold">Send a Message</h3>
+                <h3 className="text-2xl font-bold bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent mb-2">Let's Work Together</h3>
+                <p className="text-gray-400">Have a project in mind? I'd love to hear about it.</p>
               </div>
 
               <form onSubmit={handleSubmit} className="space-y-6">
+                <input
+                  type="hidden"
+                  name="to_email"
+                  value={personalInfo.contact.email}
+                />
                 <div className="grid md:grid-cols-2 gap-4">
                   <div>
                     <label htmlFor="name" className="block text-sm font-medium text-gray-300 mb-2">
@@ -185,7 +123,7 @@ export default function ContactSection() {
                       value={formData.name}
                       onChange={handleChange}
                       required
-                      className="w-full px-4 py-3 bg-slate-700 border border-slate-600 rounded-lg focus:outline-none focus:border-cyan-400 transition-colors text-white"
+                      className="w-full px-4 py-3 bg-slate-700/70 border border-slate-600 rounded-xl focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/20 transition-all duration-300 text-white placeholder-gray-400"
                       placeholder="Your name"
                     />
                   </div>
@@ -200,7 +138,7 @@ export default function ContactSection() {
                       value={formData.email}
                       onChange={handleChange}
                       required
-                      className="w-full px-4 py-3 bg-slate-700 border border-slate-600 rounded-lg focus:outline-none focus:border-cyan-400 transition-colors text-white"
+                      className="w-full px-4 py-3 bg-slate-700/70 border border-slate-600 rounded-xl focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/20 transition-all duration-300 text-white placeholder-gray-400"
                       placeholder="your.email@example.com"
                     />
                   </div>
@@ -217,7 +155,7 @@ export default function ContactSection() {
                     value={formData.subject}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-3 bg-slate-700 border border-slate-600 rounded-lg focus:outline-none focus:border-cyan-400 transition-colors text-white"
+                    className="w-full px-4 py-3 bg-slate-700/70 border border-slate-600 rounded-xl focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/20 transition-all duration-300 text-white placeholder-gray-400"
                     placeholder="Project inquiry, collaboration, etc."
                   />
                 </div>
@@ -233,7 +171,7 @@ export default function ContactSection() {
                     onChange={handleChange}
                     required
                     rows={6}
-                    className="w-full px-4 py-3 bg-slate-700 border border-slate-600 rounded-lg focus:outline-none focus:border-cyan-400 transition-colors text-white resize-none"
+                    className="w-full px-4 py-3 bg-slate-700/70 border border-slate-600 rounded-xl focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/20 transition-all duration-300 text-white placeholder-gray-400 resize-none"
                     placeholder="Tell me about your project..."
                   />
                 </div>
@@ -243,7 +181,7 @@ export default function ContactSection() {
                   disabled={isSubmitting}
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
-                  className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-cyan-500 to-purple-500 rounded-lg font-semibold hover:from-cyan-400 hover:to-purple-400 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full flex items-center justify-center gap-2 px-6 py-4 bg-gradient-to-r from-cyan-500 to-purple-500 rounded-xl font-semibold hover:from-cyan-400 hover:to-purple-400 hover:scale-105 hover:shadow-lg hover:shadow-cyan-500/25 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
                 >
                   {isSubmitting ? (
                     <>
@@ -259,8 +197,7 @@ export default function ContactSection() {
                 </motion.button>
               </form>
             </div>
-          </motion.div>
-        </div>
+        </motion.div>
       </div>
     </section>
   );

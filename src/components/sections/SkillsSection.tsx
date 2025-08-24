@@ -1,12 +1,13 @@
 'use client';
 
-import { useState } from 'react';
-import { motion } from 'framer-motion';
+import { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
+import { ChevronDown, ChevronUp } from 'lucide-react';
 import { skills } from '@/data/portfolio';
 import { Skill } from '@/types';
 
-const categories = ['all', 'frontend', 'backend', 'ai', 'tools'] as const;
+const categories = ['all', 'frontend', 'backend', 'mobile', 'ai', 'database', 'cloud', 'tools', 'other'] as const;
 
 function SkillCard({ skill, index }: { skill: Skill; index: number }) {
   return (
@@ -36,31 +37,46 @@ function SkillCard({ skill, index }: { skill: Skill; index: number }) {
       </div>
       
       {/* Category badge */}
-      <div className="mt-3">
+      {/* <div className="mt-3">
         <span className={`px-2 py-1 text-xs rounded-full ${
           skill.category === 'frontend' ? 'bg-blue-500/20 text-blue-400 border border-blue-400/30' :
           skill.category === 'backend' ? 'bg-green-500/20 text-green-400 border border-green-400/30' :
           skill.category === 'ai' ? 'bg-purple-500/20 text-purple-400 border border-purple-400/30' :
+          skill.category === 'mobile' ? 'bg-pink-500/20 text-pink-400 border border-pink-400/30' :
+          skill.category === 'database' ? 'bg-orange-500/20 text-orange-400 border border-orange-400/30' :
+          skill.category === 'cloud' ? 'bg-cyan-500/20 text-cyan-400 border border-cyan-400/30' :
           skill.category === 'tools' ? 'bg-yellow-500/20 text-yellow-400 border border-yellow-400/30' :
           'bg-gray-500/20 text-gray-400 border border-gray-400/30'
         }`}>
           {skill.category}
         </span>
-      </div>
+      </div> */}
     </motion.div>
   );
 }
 
 export default function SkillsSection() {
   const [activeCategory, setActiveCategory] = useState<typeof categories[number]>('all');
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [randomizedSkills, setRandomizedSkills] = useState<Skill[]>([]);
   const [ref, inView] = useInView({
     threshold: 0.2,
     triggerOnce: true,
   });
 
+  useEffect(() => {
+    setRandomizedSkills([...skills].sort(() => Math.random() - 0.5));
+  }, []);
+
   const filteredSkills = activeCategory === 'all' 
-    ? skills 
+    ? randomizedSkills.length > 0 ? randomizedSkills : skills
     : skills.filter(skill => skill.category === activeCategory);
+
+  const skillsPerRow = 3;
+  const defaultRows = 2;
+  const defaultSkillsCount = skillsPerRow * defaultRows;
+  const visibleSkills = isExpanded ? filteredSkills : filteredSkills.slice(0, defaultSkillsCount);
+  const hasMoreSkills = filteredSkills.length > defaultSkillsCount;
 
   return (
     <section id="skills" className="py-20 px-6 bg-slate-900/50">
@@ -107,38 +123,87 @@ export default function SkillsSection() {
           layout
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
         >
-          {filteredSkills.map((skill, index) => (
+          {visibleSkills.map((skill, index) => (
             <SkillCard key={skill.name} skill={skill} index={index} />
           ))}
         </motion.div>
 
-        {/* Skill Summary */}
+        {/* Expand/Collapse Button */}
+        {hasMoreSkills && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4, duration: 0.8 }}
+            className="flex justify-center mt-8"
+          >
+            <button
+              onClick={() => setIsExpanded(!isExpanded)}
+              className="flex items-center gap-2 px-6 py-3 bg-slate-800/50 hover:bg-slate-700/50 backdrop-blur-sm rounded-xl border border-slate-600 hover:border-cyan-400/50 transition-all duration-300 text-gray-300 hover:text-cyan-400"
+            >
+              {isExpanded ? (
+                <>
+                  <span>Show Less</span>
+                  <ChevronUp size={20} />
+                </>
+              ) : (
+                <>
+                  <span>Show More ({filteredSkills.length - defaultSkillsCount} more)</span>
+                  <ChevronDown size={20} />
+                </>
+              )}
+            </button>
+          </motion.div>
+        )}
+
+        {/* Core Expertise */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
           transition={{ delay: 0.6, duration: 0.8 }}
           className="mt-16 bg-slate-800/30 backdrop-blur-sm rounded-2xl p-8 border border-slate-700"
         >
-          <h3 className="text-2xl font-bold mb-6 text-center">Skill Distribution</h3>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-            {['frontend', 'backend', 'ai', 'tools'].map((category) => {
-              const categorySkills = skills.filter(skill => skill.category === category);
-              const avgLevel = Math.round(
-                categorySkills.reduce((sum, skill) => sum + skill.level, 0) / categorySkills.length
-              );
-              
-              return (
-                <div key={category} className="text-center">
-                  <div className="text-3xl font-bold mb-2 bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent">
-                    {avgLevel}%
-                  </div>
-                  <div className="text-sm text-gray-400 capitalize">{category}</div>
-                  <div className="text-xs text-gray-500 mt-1">
-                    {categorySkills.length} skills
-                  </div>
-                </div>
-              );
-            })}
+          <h3 className="text-2xl font-bold mb-8 text-center bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent">
+            Technical Proficiency
+          </h3>
+
+          {/* Skill Summary Stats */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+            <motion.div
+              whileHover={{ scale: 1.05 }}
+              transition={{ type: "spring", stiffness: 300 }}
+            >
+              <div className="text-3xl font-bold text-cyan-400 mb-2">
+                {skills.filter(s => s.level >= 90).length}
+              </div>
+              <div className="text-sm text-gray-400">Expert (90%+)</div>
+            </motion.div>
+            <motion.div
+              whileHover={{ scale: 1.05 }}
+              transition={{ type: "spring", stiffness: 300 }}
+            >
+              <div className="text-3xl font-bold text-purple-400 mb-2">
+                {skills.filter(s => s.level >= 80 && s.level < 90).length}
+              </div>
+              <div className="text-sm text-gray-400">Advanced (80%+)</div>
+            </motion.div>
+            <motion.div
+              whileHover={{ scale: 1.05 }}
+              transition={{ type: "spring", stiffness: 300 }}
+            >
+              <div className="text-3xl font-bold text-green-400 mb-2">
+                {[...new Set(skills.map(s => s.category))].length}
+              </div>
+              <div className="text-sm text-gray-400">Categories</div>
+            </motion.div>
+            <motion.div
+              whileHover={{ scale: 1.05 }}
+              transition={{ type: "spring", stiffness: 300 }}
+            >
+              <div className="text-3xl font-bold text-yellow-400 mb-2">
+                {skills.length}
+              </div>
+              <div className="text-sm text-gray-400">Total Skills</div>
+            </motion.div>
           </div>
         </motion.div>
       </div>

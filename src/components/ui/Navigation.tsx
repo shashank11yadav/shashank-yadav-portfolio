@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, Home, User, Code, Briefcase, Mail, Moon, Sun } from 'lucide-react';
+import { Menu, X, Home, User, Code, Briefcase, Mail } from 'lucide-react';
 
 const navigationItems = [
   { id: 'hero', label: 'Home', icon: Home },
@@ -16,7 +16,6 @@ const navigationItems = [
 export default function Navigation() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('hero');
-  const [isDarkMode, setIsDarkMode] = useState(true);
   const [scrolled, setScrolled] = useState(false);
 
   // Handle scroll
@@ -54,10 +53,6 @@ export default function Navigation() {
     setIsMenuOpen(false);
   };
 
-  const toggleTheme = () => {
-    setIsDarkMode(!isDarkMode);
-    // Theme toggle logic would go here
-  };
 
   return (
     <>
@@ -103,14 +98,6 @@ export default function Navigation() {
                   )}
                 </button>
               ))}
-              
-              {/* Theme toggle */}
-              <button
-                onClick={toggleTheme}
-                className="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 transition-colors"
-              >
-                {isDarkMode ? <Sun size={20} /> : <Moon size={20} />}
-              </button>
             </div>
 
             {/* Mobile Menu Button */}
@@ -182,15 +169,6 @@ export default function Navigation() {
                   ))}
                 </nav>
 
-                <div className="mt-8 pt-6 border-t border-slate-700">
-                  <button
-                    onClick={toggleTheme}
-                    className="w-full flex items-center gap-3 px-4 py-3 rounded-lg font-medium text-gray-300 hover:bg-slate-800 hover:text-cyan-400 transition-all duration-300"
-                  >
-                    {isDarkMode ? <Sun size={20} /> : <Moon size={20} />}
-                    {isDarkMode ? 'Light Mode' : 'Dark Mode'}
-                  </button>
-                </div>
               </div>
             </motion.div>
           </motion.div>

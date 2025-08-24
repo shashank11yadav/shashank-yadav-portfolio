@@ -35,7 +35,7 @@ export interface Education {
 export interface Skill {
   name: string;
   level: number; // 1-100
-  category: 'frontend' | 'backend' | 'mobile' | 'ai' | 'tools' | 'other';
+  category: 'frontend' | 'backend' | 'mobile' | 'ai' | 'tools' | 'cloud' | 'database' | 'other';
   icon?: string;
 }
 
@@ -48,6 +48,7 @@ export interface Contact {
     linkedin: string;
     twitter?: string;
     instagram?: string;
+    leetcode?: string;
   };
 }
 

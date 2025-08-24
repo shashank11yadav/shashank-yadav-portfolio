@@ -7,7 +7,7 @@ import { Github, ExternalLink, Eye, Code, Sparkles } from 'lucide-react';
 import { projects } from '@/data/portfolio';
 import { Project } from '@/types';
 
-const categories = ['all', 'web', 'mobile', 'ai', 'blockchain'] as const;
+const categories = ['all', 'web', 'mobile', 'ai'] as const;
 
 function ProjectCard({ project, index }: { project: Project; index: number }) {
   const [isHovered, setIsHovered] = useState(false);
@@ -25,45 +25,83 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
     >
       {/* Project image/preview */}
       <div className="relative h-48 bg-gradient-to-br from-cyan-500/20 to-purple-500/20 overflow-hidden">
-        {/* Placeholder for project image */}
-        <div className="absolute inset-0 bg-gradient-to-br from-slate-800 to-slate-900 flex items-center justify-center">
-          <div className="text-6xl opacity-50">
-            {project.category === 'web' ? '🌐' : 
-             project.category === 'mobile' ? '📱' : 
-             project.category === 'ai' ? '🤖' : 
-             project.category === 'blockchain' ? '⛓️' : '💻'}
+        {/* Animated background */}
+        <div className="absolute inset-0 bg-gradient-to-br from-slate-800 to-slate-900">
+          {/* Floating particles */}
+          <div className="absolute inset-0 opacity-30">
+            <div className="absolute top-4 left-4 w-2 h-2 bg-cyan-400 rounded-full animate-pulse"></div>
+            <div className="absolute top-8 right-6 w-1.5 h-1.5 bg-purple-400 rounded-full animate-pulse delay-300"></div>
+            <div className="absolute bottom-6 left-8 w-1 h-1 bg-pink-400 rounded-full animate-pulse delay-500"></div>
+            <div className="absolute bottom-4 right-4 w-2 h-2 bg-blue-400 rounded-full animate-pulse delay-700"></div>
+          </div>
+          
+          {/* Main icon with enhanced animation */}
+          <div className="absolute inset-0 flex items-center justify-center">
+            <motion.div
+              animate={{ 
+                scale: isHovered ? 1.2 : 1,
+                rotate: isHovered ? 5 : 0
+              }}
+              transition={{ duration: 0.3 }}
+              className="relative"
+            >
+              <div className="text-6xl opacity-60">
+                {project.category === 'web' ? '🌐' : 
+                 project.category === 'mobile' ? '📱' : 
+                 project.category === 'ai' ? '🤖' : '💻'}
+              </div>
+              {/* Glowing ring effect */}
+              {isHovered && (
+                <motion.div
+                  initial={{ scale: 0, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  exit={{ scale: 0, opacity: 0 }}
+                  className="absolute inset-0 border-2 border-cyan-400/50 rounded-full animate-ping"
+                />
+              )}
+            </motion.div>
           </div>
         </div>
         
-        {/* Hover overlay */}
+        {/* Enhanced Hover overlay */}
         <AnimatePresence>
           {isHovered && (
             <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="absolute inset-0 bg-black/60 flex items-center justify-center gap-4"
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.8 }}
+              className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/60 to-black/80 flex flex-col items-center justify-center gap-4"
             >
-              {project.demo && (
-                <a
-                  href={project.demo}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="p-3 bg-cyan-500 rounded-full hover:bg-cyan-400 transition-colors"
-                >
-                  <Eye size={20} />
-                </a>
-              )}
+              {/* Ripple effect */}
+              <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/20 to-purple-500/20 animate-pulse"></div>
+              
+              {/* GitHub button with enhanced styling */}
               {project.github && (
-                <a
+                <motion.a
                   href={project.github}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="p-3 bg-slate-700 rounded-full hover:bg-slate-600 transition-colors"
+                  initial={{ y: 20, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ delay: 0.1 }}
+                  className="relative z-10 flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-cyan-500 to-purple-500 rounded-full hover:from-cyan-400 hover:to-purple-400 transition-all duration-300 transform hover:scale-110 shadow-lg hover:shadow-cyan-500/25 font-semibold"
                 >
-                  <Github size={20} />
-                </a>
+                  <Github size={18} />
+                  <span className="text-sm">View Code</span>
+                </motion.a>
               )}
+              
+              {/* Project info preview */}
+              <motion.div
+                initial={{ y: 20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ delay: 0.2 }}
+                className="text-center px-4"
+              >
+                <p className="text-xs text-gray-300 font-medium">
+                  {project.technologies.slice(0, 3).join(' • ')}
+                </p>
+              </motion.div>
             </motion.div>
           )}
         </AnimatePresence>
@@ -82,7 +120,6 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
             project.category === 'web' ? 'bg-blue-500/20 text-blue-400 border border-blue-400/30' :
             project.category === 'mobile' ? 'bg-green-500/20 text-green-400 border border-green-400/30' :
             project.category === 'ai' ? 'bg-purple-500/20 text-purple-400 border border-purple-400/30' :
-            project.category === 'blockchain' ? 'bg-yellow-500/20 text-yellow-400 border border-yellow-400/30' :
             'bg-gray-500/20 text-gray-400 border border-gray-400/30'
           }`}>
             {project.category}
@@ -100,45 +137,38 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
           {project.description}
         </p>
 
-        {/* Technologies */}
+        {/* Technologies with enhanced styling */}
         <div className="flex flex-wrap gap-2 mb-4">
-          {project.technologies.slice(0, 4).map((tech) => (
-            <span
+          {project.technologies.slice(0, 4).map((tech, techIndex) => (
+            <motion.span
               key={tech}
-              className="px-2 py-1 bg-slate-700 text-cyan-400 text-xs rounded border border-cyan-400/30"
+              initial={{ opacity: 0, scale: 0.8 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              transition={{ delay: techIndex * 0.1 }}
+              whileHover={{ scale: 1.05 }}
+              className="px-3 py-1 bg-gradient-to-r from-slate-700 to-slate-600 text-cyan-400 text-xs rounded-full border border-cyan-400/30 hover:border-cyan-400/60 transition-all duration-300 font-medium hover:shadow-lg hover:shadow-cyan-400/20"
             >
               {tech}
-            </span>
+            </motion.span>
           ))}
           {project.technologies.length > 4 && (
-            <span className="px-2 py-1 bg-slate-700 text-gray-400 text-xs rounded">
-              +{project.technologies.length - 4}
+            <span className="px-3 py-1 bg-gradient-to-r from-slate-700 to-slate-600 text-gray-400 text-xs rounded-full font-medium">
+              +{project.technologies.length - 4} more
             </span>
           )}
         </div>
 
-        {/* Action buttons */}
+        {/* Action button */}
         <div className="flex gap-3">
-          {project.demo && (
-            <a
-              href={project.demo}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-gradient-to-r from-cyan-500 to-purple-500 rounded-lg font-semibold hover:from-cyan-400 hover:to-purple-400 transition-all duration-300 text-sm"
-            >
-              <ExternalLink size={16} />
-              Demo
-            </a>
-          )}
           {project.github && (
             <a
               href={project.github}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex-1 flex items-center justify-center gap-2 px-4 py-2 border border-slate-600 rounded-lg hover:bg-slate-700 transition-colors text-sm"
+              className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-gradient-to-r from-cyan-500 to-purple-500 rounded-lg font-semibold hover:from-cyan-400 hover:to-purple-400 hover:scale-105 transition-all duration-300 text-sm transform hover:shadow-lg hover:shadow-cyan-500/25"
             >
-              <Code size={16} />
-              Code
+              <Github size={16} />
+              View Code
             </a>
           )}
         </div>
@@ -185,7 +215,24 @@ export default function ProjectsSection() {
           transition={{ delay: 0.2, duration: 0.8 }}
           className="mb-16"
         >
-          <h3 className="text-2xl font-bold mb-8 text-center">🌟 Featured Work</h3>
+          <div className="text-center mb-8">
+            <motion.h3 
+              className="text-2xl md:text-3xl font-bold mb-4 bg-gradient-to-r from-yellow-400 via-orange-500 to-red-500 bg-clip-text text-transparent"
+              initial={{ opacity: 0, y: 20 }}
+              animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+              transition={{ delay: 0.3, duration: 0.8 }}
+            >
+              ⭐ Featured Projects
+            </motion.h3>
+            <motion.p 
+              className="text-gray-400 max-w-2xl mx-auto"
+              initial={{ opacity: 0, y: 20 }}
+              animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+              transition={{ delay: 0.4, duration: 0.8 }}
+            >
+              Highlighting my most impactful and innovative projects that showcase cutting-edge technologies and problem-solving skills
+            </motion.p>
+          </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {featuredProjects.map((project, index) => (
               <ProjectCard key={project.id} project={project} index={index} />
@@ -193,28 +240,50 @@ export default function ProjectsSection() {
           </div>
         </motion.div>
 
-        {/* Category Filter */}
+        {/* Enhanced Category Filter */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
           transition={{ delay: 0.4, duration: 0.8 }}
           className="flex flex-wrap justify-center gap-4 mb-12"
         >
-          {categories.map((category) => (
-            <button
+          {categories.map((category, index) => (
+            <motion.button
               key={category}
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: index * 0.1 }}
               onClick={() => setActiveCategory(category)}
-              className={`px-6 py-2 rounded-full font-semibold transition-all duration-300 ${
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className={`relative px-6 py-3 rounded-full font-semibold transition-all duration-300 transform ${
                 activeCategory === category
-                  ? 'bg-gradient-to-r from-cyan-500 to-purple-500 text-white'
-                  : 'bg-slate-800 text-gray-300 hover:bg-slate-700 border border-slate-600'
+                  ? 'bg-gradient-to-r from-cyan-500 to-purple-500 text-white shadow-lg shadow-cyan-500/25'
+                  : 'bg-slate-800/70 backdrop-blur-sm text-gray-300 hover:bg-slate-700 border border-slate-600 hover:border-cyan-400/50'
               }`}
             >
-              {category.charAt(0).toUpperCase() + category.slice(1)}
-              <span className="ml-2 text-sm">
-                ({category === 'all' ? projects.length : projects.filter(p => p.category === category).length})
+              {/* Active indicator */}
+              {activeCategory === category && (
+                <motion.div
+                  layoutId="activeCategory"
+                  className="absolute inset-0 bg-gradient-to-r from-cyan-500 to-purple-500 rounded-full"
+                  transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                />
+              )}
+              
+              <span className="relative z-10 flex items-center gap-2">
+                <span className="text-lg">
+                  {category === 'all' ? '🚀' :
+                   category === 'web' ? '🌐' :
+                   category === 'mobile' ? '📱' :
+                   category === 'ai' ? '🤖' : '💻'}
+                </span>
+                {category.charAt(0).toUpperCase() + category.slice(1)}
+                <span className="text-sm opacity-80 bg-black/20 px-2 py-0.5 rounded-full">
+                  {category === 'all' ? projects.length : projects.filter(p => p.category === category).length}
+                </span>
               </span>
-            </button>
+            </motion.button>
           ))}
         </motion.div>
 
