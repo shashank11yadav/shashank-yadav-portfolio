@@ -6,6 +6,7 @@ import { useInView } from 'react-intersection-observer';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import { skills } from '@/data/portfolio';
 import { Skill } from '@/types';
+import SkillSphere from '@/components/3d/SkillSphere';
 
 const categories = ['all', 'frontend', 'backend', 'mobile', 'ai', 'database', 'cloud', 'tools', 'other'] as const;
 
@@ -58,6 +59,7 @@ function SkillCard({ skill, index }: { skill: Skill; index: number }) {
 export default function SkillsSection() {
   const [activeCategory, setActiveCategory] = useState<typeof categories[number]>('all');
   const [isExpanded, setIsExpanded] = useState(false);
+  const [viewMode, setViewMode] = useState<'grid' | 'sphere'>('grid');
   const [randomizedSkills, setRandomizedSkills] = useState<Skill[]>([]);
   const [ref, inView] = useInView({
     threshold: 0.2,
@@ -86,73 +88,128 @@ export default function SkillsSection() {
           initial={{ opacity: 0, y: 30 }}
           animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
           transition={{ duration: 0.8 }}
-          className="text-center mb-12"
+          className="mb-12"
         >
-          <h2 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent mb-4">
-            Skills & Technologies
-          </h2>
-          <p className="text-lg text-gray-300 max-w-2xl mx-auto">
-            A comprehensive toolkit for building modern, scalable applications
-          </p>
-        </motion.div>
-
-        {/* Category Filter */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-          transition={{ delay: 0.2, duration: 0.8 }}
-          className="flex flex-wrap justify-center gap-4 mb-12"
-        >
-          {categories.map((category) => (
-            <button
-              key={category}
-              onClick={() => setActiveCategory(category)}
-              className={`px-6 py-2 rounded-full font-semibold transition-all duration-300 ${
-                activeCategory === category
-                  ? 'bg-gradient-to-r from-cyan-500 to-purple-500 text-white'
-                  : 'bg-slate-800 text-gray-300 hover:bg-slate-700 border border-slate-600'
-              }`}
+          <div className="flex flex-col md:flex-row md:items-start md:justify-between mb-4">
+            <div className="mb-4 md:mb-0">
+              <h2 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent mb-2">
+                Skills & Technologies
+              </h2>
+              <p className="text-lg text-gray-300 max-w-2xl">
+                A comprehensive toolkit for building modern, scalable applications
+              </p>
+            </div>
+            
+            {/* View Toggle Button */}
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              animate={inView ? { opacity: 1, x: 0 } : { opacity: 0, x: 20 }}
+              transition={{ delay: 0.2, duration: 0.8 }}
             >
-              {category.charAt(0).toUpperCase() + category.slice(1)}
-            </button>
-          ))}
+              <div className="bg-slate-800/50 backdrop-blur-sm rounded-xl p-2 border border-slate-600 flex">
+                <button
+                  onClick={() => setViewMode('grid')}
+                  className={`px-4 py-2 rounded-lg font-semibold transition-all duration-300 flex items-center gap-2 text-sm ${
+                    viewMode === 'grid'
+                      ? 'bg-gradient-to-r from-cyan-500 to-purple-500 text-white shadow-lg'
+                      : 'text-gray-300 hover:text-white hover:bg-slate-700/50'
+                  }`}
+                >
+                  <span className="text-base">📊</span>
+                  Grid
+                </button>
+                <button
+                  onClick={() => setViewMode('sphere')}
+                  className={`px-4 py-2 rounded-lg font-semibold transition-all duration-300 flex items-center gap-2 ml-2 text-sm ${
+                    viewMode === 'sphere'
+                      ? 'bg-gradient-to-r from-cyan-500 to-purple-500 text-white shadow-lg'
+                      : 'text-gray-300 hover:text-white hover:bg-slate-700/50'
+                  }`}
+                >
+                  <span className="text-base">🌐</span>
+                  3D
+                </button>
+              </div>
+            </motion.div>
+          </div>
         </motion.div>
 
-        {/* Skills Grid */}
-        <motion.div
-          layout
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-        >
-          {visibleSkills.map((skill, index) => (
-            <SkillCard key={skill.name} skill={skill} index={index} />
-          ))}
-        </motion.div>
-
-        {/* Expand/Collapse Button */}
-        {hasMoreSkills && (
+        {/* Category Filter - only show in grid view */}
+        {viewMode === 'grid' && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4, duration: 0.8 }}
-            className="flex justify-center mt-8"
+            animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+            transition={{ delay: 0.3, duration: 0.8 }}
+            className="flex flex-wrap justify-center gap-4 mb-12"
           >
-            <button
-              onClick={() => setIsExpanded(!isExpanded)}
-              className="flex items-center gap-2 px-6 py-3 bg-slate-800/50 hover:bg-slate-700/50 backdrop-blur-sm rounded-xl border border-slate-600 hover:border-cyan-400/50 transition-all duration-300 text-gray-300 hover:text-cyan-400"
-            >
-              {isExpanded ? (
-                <>
-                  <span>Show Less</span>
-                  <ChevronUp size={20} />
-                </>
-              ) : (
-                <>
-                  <span>Show More ({filteredSkills.length - defaultSkillsCount} more)</span>
-                  <ChevronDown size={20} />
-                </>
-              )}
-            </button>
+            {categories.map((category) => (
+              <button
+                key={category}
+                onClick={() => setActiveCategory(category)}
+                className={`px-6 py-2 rounded-full font-semibold transition-all duration-300 ${
+                  activeCategory === category
+                    ? 'bg-gradient-to-r from-cyan-500 to-purple-500 text-white'
+                    : 'bg-slate-800 text-gray-300 hover:bg-slate-700 border border-slate-600'
+                }`}
+              >
+                {category.charAt(0).toUpperCase() + category.slice(1)}
+              </button>
+            ))}
           </motion.div>
+        )}
+
+        {/* Conditional View Rendering */}
+        {viewMode === 'sphere' ? (
+          /* 3D Skills Visualization */
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={inView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.9 }}
+            transition={{ delay: 0.4, duration: 0.8 }}
+            className="mb-12"
+          >
+            <div className="bg-slate-800/20 backdrop-blur-sm rounded-2xl border border-slate-700 p-4">
+              <SkillSphere />
+            </div>
+          </motion.div>
+        ) : (
+          <>
+            {/* Skills Grid - Traditional View */}
+            <motion.div
+              layout
+              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+            >
+              {visibleSkills.map((skill, index) => (
+                <SkillCard key={skill.name} skill={skill} index={index} />
+              ))}
+            </motion.div>
+
+            {/* Expand/Collapse Button */}
+            {hasMoreSkills && (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.4, duration: 0.8 }}
+                className="flex justify-center mt-8"
+              >
+                <button
+                  onClick={() => setIsExpanded(!isExpanded)}
+                  className="flex items-center gap-2 px-6 py-3 bg-slate-800/50 hover:bg-slate-700/50 backdrop-blur-sm rounded-xl border border-slate-600 hover:border-cyan-400/50 transition-all duration-300 text-gray-300 hover:text-cyan-400"
+                >
+                  {isExpanded ? (
+                    <>
+                      <span>Show Less</span>
+                      <ChevronUp size={20} />
+                    </>
+                  ) : (
+                    <>
+                      <span>Show More ({filteredSkills.length - defaultSkillsCount} more)</span>
+                      <ChevronDown size={20} />
+                    </>
+                  )}
+                </button>
+              </motion.div>
+            )}
+          </>
         )}
 
         {/* Core Expertise */}
@@ -162,7 +219,7 @@ export default function SkillsSection() {
           transition={{ delay: 0.6, duration: 0.8 }}
           className="mt-16 bg-slate-800/30 backdrop-blur-sm rounded-2xl p-8 border border-slate-700"
         >
-          <h3 className="text-2xl font-bold mb-8 text-center bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent">
+          <h3 className="text-2xl font-bold mb-8 text-center text-white">
             Technical Proficiency
           </h3>
 

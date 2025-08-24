@@ -58,22 +58,70 @@ export default function AboutSection() {
             <motion.div variants={itemVariants} className="space-y-4">
               <h3 className="text-xl font-semibold text-cyan-400">What I Do</h3>
               <div className="grid sm:grid-cols-2 gap-4">
-                <div className="p-4 bg-slate-800/50 rounded-lg backdrop-blur-sm border border-slate-700">
-                  <h4 className="font-semibold text-purple-400 mb-2">🚀 Full-Stack Development</h4>
-                  <p className="text-sm text-gray-400">Building scalable web applications with modern frameworks</p>
-                </div>
-                <div className="p-4 bg-slate-800/50 rounded-lg backdrop-blur-sm border border-slate-700">
-                  <h4 className="font-semibold text-cyan-400 mb-2">🤖 AI/ML Solutions</h4>
-                  <p className="text-sm text-gray-400">Creating intelligent systems and machine learning models</p>
-                </div>
-                <div className="p-4 bg-slate-800/50 rounded-lg backdrop-blur-sm border border-slate-700">
-                  <h4 className="font-semibold text-green-400 mb-2">☁️ Cloud Architecture</h4>
-                  <p className="text-sm text-gray-400">Designing and deploying cloud-native applications</p>
-                </div>
-                <div className="p-4 bg-slate-800/50 rounded-lg backdrop-blur-sm border border-slate-700">
-                  <h4 className="font-semibold text-yellow-400 mb-2">🎨 UI/UX Design</h4>
-                  <p className="text-sm text-gray-400">Creating beautiful and intuitive user experiences</p>
-                </div>
+                <motion.div 
+                  className="group p-4 bg-slate-800/50 rounded-lg backdrop-blur-sm border border-slate-700 hover:border-purple-400/50 hover:bg-slate-700/50 transition-all duration-300 cursor-pointer"
+                  whileHover={{ scale: 1.02, y: -2 }}
+                  transition={{ type: "spring", stiffness: 300 }}
+                >
+                  <motion.h4 
+                    className="font-semibold text-purple-400 mb-2 group-hover:text-purple-300 transition-colors"
+                    whileHover={{ x: 5 }}
+                  >
+                    🚀 Full-Stack Development
+                  </motion.h4>
+                  <p className="text-sm text-gray-400 group-hover:text-gray-300 transition-colors">Building scalable web applications with modern frameworks</p>
+                  <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <div className="w-2 h-2 bg-purple-400 rounded-full animate-pulse"></div>
+                  </div>
+                </motion.div>
+                <motion.div 
+                  className="group p-4 bg-slate-800/50 rounded-lg backdrop-blur-sm border border-slate-700 hover:border-cyan-400/50 hover:bg-slate-700/50 transition-all duration-300 cursor-pointer"
+                  whileHover={{ scale: 1.02, y: -2 }}
+                  transition={{ type: "spring", stiffness: 300 }}
+                >
+                  <motion.h4 
+                    className="font-semibold text-cyan-400 mb-2 group-hover:text-cyan-300 transition-colors"
+                    whileHover={{ x: 5 }}
+                  >
+                    🤖 AI/ML Solutions
+                  </motion.h4>
+                  <p className="text-sm text-gray-400 group-hover:text-gray-300 transition-colors">Creating intelligent systems and machine learning models</p>
+                  <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <div className="w-2 h-2 bg-cyan-400 rounded-full animate-pulse"></div>
+                  </div>
+                </motion.div>
+                <motion.div 
+                  className="group p-4 bg-slate-800/50 rounded-lg backdrop-blur-sm border border-slate-700 hover:border-green-400/50 hover:bg-slate-700/50 transition-all duration-300 cursor-pointer"
+                  whileHover={{ scale: 1.02, y: -2 }}
+                  transition={{ type: "spring", stiffness: 300 }}
+                >
+                  <motion.h4 
+                    className="font-semibold text-green-400 mb-2 group-hover:text-green-300 transition-colors"
+                    whileHover={{ x: 5 }}
+                  >
+                    ☁️ Cloud Architecture
+                  </motion.h4>
+                  <p className="text-sm text-gray-400 group-hover:text-gray-300 transition-colors">Designing and deploying cloud-native applications</p>
+                  <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                  </div>
+                </motion.div>
+                <motion.div 
+                  className="group p-4 bg-slate-800/50 rounded-lg backdrop-blur-sm border border-slate-700 hover:border-yellow-400/50 hover:bg-slate-700/50 transition-all duration-300 cursor-pointer"
+                  whileHover={{ scale: 1.02, y: -2 }}
+                  transition={{ type: "spring", stiffness: 300 }}
+                >
+                  <motion.h4 
+                    className="font-semibold text-yellow-400 mb-2 group-hover:text-yellow-300 transition-colors"
+                    whileHover={{ x: 5 }}
+                  >
+                    🎨 UI/UX Design
+                  </motion.h4>
+                  <p className="text-sm text-gray-400 group-hover:text-gray-300 transition-colors">Creating beautiful and intuitive user experiences</p>
+                  <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <div className="w-2 h-2 bg-yellow-400 rounded-full animate-pulse"></div>
+                  </div>
+                </motion.div>
               </div>
             </motion.div>
 
@@ -138,13 +186,21 @@ export default function AboutSection() {
               <div className="mt-8 pt-6 border-t border-slate-600">
                 <h4 className="text-lg font-semibold mb-4 text-center">Learning new things</h4>
                 <div className="flex flex-wrap gap-2 justify-center">
-                  {['WebAssembly', 'Retrieval-Augmented Generation', 'Kubernetes', 'Vector Databases', 'LangChain'].map((tech) => (
-                    <span
+                  {['WebAssembly', 'Retrieval-Augmented Generation', 'Kubernetes', 'Vector Databases', 'LangChain'].map((tech, index) => (
+                    <motion.span
                       key={tech}
-                      className="px-3 py-1 bg-gradient-to-r from-cyan-500/20 to-purple-500/20 text-sm rounded-full border border-cyan-400/30"
+                      initial={{ opacity: 0, scale: 0.8 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ delay: index * 0.1 }}
+                      whileHover={{ 
+                        scale: 1.1, 
+                        y: -2,
+                        boxShadow: "0 4px 20px rgba(6, 182, 212, 0.3)"
+                      }}
+                      className="px-3 py-1 bg-gradient-to-r from-cyan-500/20 to-purple-500/20 text-sm rounded-full border border-cyan-400/30 hover:border-cyan-400/60 hover:from-cyan-500/30 hover:to-purple-500/30 transition-all duration-300 cursor-pointer"
                     >
                       {tech}
-                    </span>
+                    </motion.span>
                   ))}
                 </div>
               </div>

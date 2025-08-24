@@ -3,6 +3,7 @@
 import { motion } from 'framer-motion';
 import { ChevronDown, Github, Linkedin, Mail, MapPin, Code, Twitter, Instagram } from 'lucide-react';
 import TerminalText from '@/components/animations/TerminalText';
+import FloatingElements from '@/components/3d/FloatingElements';
 import { personalInfo } from '@/data/portfolio';
 
 const terminalLines = [
@@ -23,6 +24,11 @@ export default function HeroSection() {
     <section className="min-h-screen flex items-center justify-center relative overflow-hidden">
       {/* Background gradient */}
       <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900"></div>
+      
+      {/* 3D Floating Elements Background */}
+      <div className="absolute inset-0 z-0">
+        <FloatingElements />
+      </div>
       
       {/* Content */}
       <div className="relative z-10 max-w-7xl mx-auto px-6 py-8 sm:py-16">
