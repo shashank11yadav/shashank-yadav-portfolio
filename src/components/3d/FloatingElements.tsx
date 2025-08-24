@@ -88,12 +88,13 @@ function FloatingTorus({ position, color, speed }: { position: [number, number, 
 
 export default function FloatingElements() {
   const elements = useMemo(() => [
-    { type: 'cube', position: [-4, 5, -5] as [number, number, number], color: '#06b6d4', speed: 0.3 }, // cyan cube - moved to top left
-    { type: 'sphere', position: [7, 1, -4] as [number, number, number], color: '#8b5cf6', speed: 0.2 }, // purple sphere
-    { type: 'torus', position: [-8, -6, -7] as [number, number, number], color: '#8b5cf6', speed: 0.25 }, // purple donut - left bottom corner
-    { type: 'cube', position: [8, 6, -4] as [number, number, number], color: '#a855f7', speed: 0.225 }, // purple cube
+    { type: 'cube', position: [-2, 2, -4] as [number, number, number], color: '#a855f7', speed: 0.3 }, // cyan cube - moved to top left
+    { type: 'sphere', position: [7, 2, -4] as [number, number, number], color: '#8b5cf6', speed: 0.2 }, // purple sphere
+    { type: 'torus', position: [-9, -9, -7] as [number, number, number], color: '#8b5cf6', speed: 0.25 }, // purple donut - left bottom corner
+    { type: 'cube', position: [8, 6, -4] as [number, number, number], color: '#06b6d4', speed: 0.225 }, // purple cube
     { type: 'sphere', position: [1, -5, -3] as [number, number, number], color: '#06b6d4', speed: 0.275 }, // cyan sphere
-    { type: 'torus', position: [10, -6, -8] as [number, number, number], color: '#8b5cf6', speed: 0.25 }, // purple donut - moved to bottom right
+    // { type: 'sphere', position: [-10, 5, -4] as [number, number, number], color: '#06b6d4', speed: 0.275 }, // cyan sphere
+    { type: 'torus', position: [13, -6, -8] as [number, number, number], color: '#8b5cf6', speed: 0.25 }, // purple donut - moved to bottom right
   ], []);
 
   return (
