@@ -1,11 +1,20 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { ChevronDown, Github, Linkedin, Mail, MapPin, Code, Twitter, Instagram } from 'lucide-react';
+import { MapPin } from 'lucide-react';
 import TerminalText from '@/components/animations/TerminalText';
 import FloatingElements from '@/components/3d/FloatingElements';
 import { personalInfo } from '@/data/portfolio';
 import { getAssetPath } from '@/lib/utils';
+import { 
+  AnimatedGitHub, 
+  AnimatedLinkedIn, 
+  AnimatedTwitter, 
+  AnimatedInstagram,
+  AnimatedMail, 
+  AnimatedCode,
+  AnimatedArrowDown
+} from '@/components/icons/AnimatedIcons';
 
 const terminalLines = [
   'npm install awesome-developer',
@@ -223,7 +232,7 @@ export default function HeroSection() {
                 rel="noopener noreferrer"
                 className="p-4 bg-slate-800/70 backdrop-blur-sm rounded-xl hover:bg-slate-700 hover:scale-110 transition-all duration-300 border border-slate-700 hover:border-cyan-400/50"
               >
-                <Github size={24} />
+                <AnimatedGitHub size={24} color="#06b6d4" />
               </a>
               <a
                 href={personalInfo.contact.social.linkedin}
@@ -231,7 +240,7 @@ export default function HeroSection() {
                 rel="noopener noreferrer"
                 className="p-4 bg-slate-800/70 backdrop-blur-sm rounded-xl hover:bg-slate-700 hover:scale-110 transition-all duration-300 border border-slate-700 hover:border-cyan-400/50"
               >
-                <Linkedin size={24} />
+                <AnimatedLinkedIn size={24} color="#06b6d4" />
               </a>
               {personalInfo.contact.social.twitter && (
                 <a
@@ -240,7 +249,7 @@ export default function HeroSection() {
                   rel="noopener noreferrer"
                   className="p-4 bg-slate-800/70 backdrop-blur-sm rounded-xl hover:bg-slate-700 hover:scale-110 transition-all duration-300 border border-slate-700 hover:border-cyan-400/50"
                 >
-                  <Twitter size={24} />
+                  <AnimatedTwitter size={24} color="#06b6d4" />
                 </a>
               )}
               {personalInfo.contact.social.instagram && (
@@ -250,7 +259,7 @@ export default function HeroSection() {
                   rel="noopener noreferrer"
                   className="p-4 bg-slate-800/70 backdrop-blur-sm rounded-xl hover:bg-slate-700 hover:scale-110 transition-all duration-300 border border-slate-700 hover:border-cyan-400/50"
                 >
-                  <Instagram size={24} />
+                  <AnimatedInstagram size={24} color="#06b6d4" />
                 </a>
               )}
               {personalInfo.contact.social.leetcode && (
@@ -260,14 +269,14 @@ export default function HeroSection() {
                   rel="noopener noreferrer"
                   className="p-4 bg-slate-800/70 backdrop-blur-sm rounded-xl hover:bg-slate-700 hover:scale-110 transition-all duration-300 border border-slate-700 hover:border-cyan-400/50"
                 >
-                  <Code size={24} />
+                  <AnimatedCode size={24} color="#06b6d4" />
                 </a>
               )}
               <a
                 href={`mailto:${personalInfo.contact.email}`}
                 className="p-4 bg-slate-800/70 backdrop-blur-sm rounded-xl hover:bg-slate-700 hover:scale-110 transition-all duration-300 border border-slate-700 hover:border-cyan-400/50"
               >
-                <Mail size={24} />
+                <AnimatedMail size={24} color="#06b6d4" />
               </a>
             </motion.div>
           </motion.div>
@@ -286,7 +295,7 @@ export default function HeroSection() {
             className="cursor-pointer"
             onClick={() => scrollToSection('about')}
           >
-            <ChevronDown size={32} className="text-gray-400 hover:text-cyan-400 transition-colors" />
+            <AnimatedArrowDown size={32} color="#9ca3af" className="hover:text-cyan-400 transition-colors" />
           </motion.div>
         </motion.div>
       </div>

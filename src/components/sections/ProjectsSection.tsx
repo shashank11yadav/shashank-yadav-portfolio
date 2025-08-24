@@ -3,9 +3,15 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
-import { Github, ExternalLink, Eye, Code, Sparkles } from 'lucide-react';
+import { Sparkles } from 'lucide-react';
 import { projects } from '@/data/portfolio';
 import { Project } from '@/types';
+import { 
+  AnimatedWebsite, 
+  AnimatedMobile, 
+  AnimatedAI, 
+  AnimatedGitHub 
+} from '@/components/icons/AnimatedIcons';
 
 const categories = ['all', 'web', 'mobile', 'ai'] as const;
 
@@ -44,10 +50,10 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
                 transition={{ duration: 0.3 }}
                 className="relative"
               >
-                <div className="text-6xl opacity-60">
-                  {project.category === 'web' ? '🌐' : 
-                   project.category === 'mobile' ? '📱' : 
-                   project.category === 'ai' ? '🤖' : '💻'}
+                <div className="opacity-60">
+                  {project.category === 'web' ? <AnimatedWebsite size={64} color="#06b6d4" /> : 
+                   project.category === 'mobile' ? <AnimatedMobile size={64} color="#06b6d4" /> : 
+                   project.category === 'ai' ? <AnimatedAI size={64} color="#06b6d4" /> : <AnimatedWebsite size={64} color="#06b6d4" />}
                 </div>
                 {/* Glowing ring effect */}
                 {isHovered && (
@@ -85,7 +91,7 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
                     transition={{ delay: 0.1 }}
                     className="relative z-10 flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-cyan-500 to-purple-500 rounded-full hover:from-cyan-400 hover:to-purple-400 transition-all duration-300 transform hover:scale-110 shadow-lg hover:shadow-cyan-500/25 font-semibold"
                   >
-                    <Github size={18} />
+                    <AnimatedGitHub size={18} />
                     <span className="text-sm">View Code</span>
                   </motion.a>
                 )}
@@ -166,7 +172,7 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
                 rel="noopener noreferrer"
                 className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-gradient-to-r from-cyan-500 to-purple-500 rounded-lg font-semibold hover:from-cyan-400 hover:to-purple-400 hover:scale-105 transition-all duration-300 text-sm transform hover:shadow-lg hover:shadow-cyan-500/25"
               >
-                <Github size={16} />
+                <AnimatedGitHub size={16} />
                 View Code
               </a>
             )}

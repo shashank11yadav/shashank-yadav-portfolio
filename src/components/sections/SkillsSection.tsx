@@ -7,8 +7,39 @@ import { ChevronDown, ChevronUp } from 'lucide-react';
 import { skills } from '@/data/portfolio';
 import { Skill } from '@/types';
 import SkillSphere from '@/components/3d/SkillSphere';
+import { 
+  AnimatedCode, 
+  AnimatedDatabase, 
+  AnimatedCloud, 
+  AnimatedMobile, 
+  AnimatedAI, 
+  AnimatedTools
+} from '@/components/icons/AnimatedIcons';
 
 const categories = ['all', 'frontend', 'backend', 'mobile', 'ai', 'database', 'cloud', 'tools', 'other'] as const;
+
+const getCategoryIcon = (category: string) => {
+  const iconProps = { size: 18, color: "currentColor", animate: true };
+  
+  switch (category) {
+    case 'frontend':
+    case 'backend':
+      return <AnimatedCode {...iconProps} />;
+    case 'database':
+      return <AnimatedDatabase {...iconProps} />;
+    case 'cloud':
+      return <AnimatedCloud {...iconProps} />;
+    case 'mobile':
+      return <AnimatedMobile {...iconProps} />;
+    case 'ai':
+      return <AnimatedAI {...iconProps} />;
+    case 'tools':
+    case 'other':
+      return <AnimatedTools {...iconProps} />;
+    default:
+      return null;
+  }
+};
 
 function SkillCard({ skill, index }: { skill: Skill; index: number }) {
   return (
@@ -143,17 +174,20 @@ export default function SkillsSection() {
             className="flex flex-wrap justify-center gap-4 mb-12"
           >
             {categories.map((category) => (
-              <button
+              <motion.button
                 key={category}
                 onClick={() => setActiveCategory(category)}
-                className={`px-6 py-2 rounded-full font-semibold transition-all duration-300 ${
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className={`flex items-center gap-2 px-6 py-2 rounded-full font-semibold transition-all duration-300 ${
                   activeCategory === category
                     ? 'bg-gradient-to-r from-cyan-500 to-purple-500 text-white'
                     : 'bg-slate-800 text-gray-300 hover:bg-slate-700 border border-slate-600'
                 }`}
               >
-                {category.charAt(0).toUpperCase() + category.slice(1)}
-              </button>
+                {getCategoryIcon(category)}
+                <span>{category.charAt(0).toUpperCase() + category.slice(1)}</span>
+              </motion.button>
             ))}
           </motion.div>
         )}
