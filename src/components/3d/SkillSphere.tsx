@@ -5,14 +5,16 @@ import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { Text, OrbitControls } from '@react-three/drei';
 import * as THREE from 'three';
 import { skills } from '@/data/portfolio';
+import { useTheme } from '@/contexts/ThemeContext';
 
 interface SkillNodeProps {
   skill: typeof skills[0];
   position: [number, number, number];
   onHover: (skill: typeof skills[0] | null) => void;
+  isDark: boolean;
 }
 
-function SkillNode({ skill, position, onHover }: SkillNodeProps) {
+function SkillNode({ skill, position, onHover, isDark }: SkillNodeProps) {
   const meshRef = useRef<THREE.Mesh>(null);
   const textRef = useRef<any>(null);
   const [hovered, setHovered] = useState(false);
@@ -32,10 +34,10 @@ function SkillNode({ skill, position, onHover }: SkillNodeProps) {
   });
 
   const color = useMemo(() => {
-    if (skill.level >= 90) return '#06b6d4'; // Cyan for expert
-    if (skill.level >= 80) return '#8b5cf6'; // Purple for advanced
-    return '#64748b'; // Gray for others
-  }, [skill.level]);
+    if (skill.level >= 90) return isDark ? '#06b6d4' : '#0891b2'; // Cyan for expert
+    if (skill.level >= 80) return isDark ? '#8b5cf6' : '#7c3aed'; // Purple for advanced
+    return isDark ? '#64748b' : '#475569'; // Gray for others
+  }, [skill.level, isDark]);
 
   return (
     <group position={position}>
@@ -63,7 +65,7 @@ function SkillNode({ skill, position, onHover }: SkillNodeProps) {
         ref={textRef}
         position={[0, 0, 0]}
         fontSize={0.12}
-        color="white"
+        color={isDark ? "white" : "#1f2937"}
         anchorX="center"
         anchorY="middle"
         maxWidth={1.2}
@@ -79,6 +81,7 @@ interface SkillSphereProps {
 }
 
 export default function SkillSphere({ className = "" }: SkillSphereProps) {
+  const { isDark } = useTheme();
   const [hoveredSkill, setHoveredSkill] = useState<typeof skills[0] | null>(null);
   
   const allSkills = useMemo(() => {
@@ -108,7 +111,9 @@ export default function SkillSphere({ className = "" }: SkillSphereProps) {
       <Canvas 
         camera={{ position: [0, 0, 8], fov: 75 }}
         style={{ 
-          background: 'radial-gradient(circle, rgba(30,41,59,0.3) 0%, rgba(15,23,42,0.8) 100%)'
+          background: isDark 
+            ? 'radial-gradient(circle, rgba(30,41,59,0.3) 0%, rgba(15,23,42,0.8) 100%)'
+            : 'radial-gradient(circle, rgba(248,250,252,0.8) 0%, rgba(226,232,240,0.9) 100%)'
         }}
       >
         <ambientLight intensity={0.8} />
@@ -130,32 +135,49 @@ export default function SkillSphere({ className = "" }: SkillSphereProps) {
             skill={skill}
             position={skillPositions[index]}
             onHover={setHoveredSkill}
+            isDark={isDark}
           />
         ))}
       </Canvas>
       
       {/* Skill info overlay */}
       {hoveredSkill && (
-        <div className="absolute bottom-4 left-4 bg-slate-800/90 backdrop-blur-sm rounded-lg p-4 border border-slate-600 max-w-xs">
+        <div className={`absolute bottom-4 left-4 backdrop-blur-sm rounded-lg p-4 border max-w-xs transition-colors duration-300 ${
+          isDark 
+            ? 'bg-slate-800/90 border-slate-600' 
+            : 'bg-white/90 border-slate-300'
+        }`}>
           <div className="flex items-center gap-3">
             <span className="text-2xl">{hoveredSkill.icon}</span>
             <div>
-              <h4 className="font-semibold text-white">{hoveredSkill.name}</h4>
-              <div className="text-sm text-gray-400 capitalize">{hoveredSkill.category}</div>
+              <h4 className={`font-semibold transition-colors duration-300 ${
+                isDark ? 'text-white' : 'text-gray-800'
+              }`}>{hoveredSkill.name}</h4>
+              <div className={`text-sm capitalize transition-colors duration-300 ${
+                isDark ? 'text-gray-400' : 'text-gray-600'
+              }`}>{hoveredSkill.category}</div>
             </div>
           </div>
         </div>
       )}
       
       <div className="absolute top-4 right-4 text-right">
-        <div className="text-sm text-gray-400 bg-slate-800/70 px-3 py-2 rounded-lg backdrop-blur-sm">
+        <div className={`text-sm px-3 py-2 rounded-lg backdrop-blur-sm transition-colors duration-300 ${
+          isDark 
+            ? 'text-gray-400 bg-slate-800/70' 
+            : 'text-gray-600 bg-white/70'
+        }`}>
           🎯 Interactive 3D Skills<br/>
           Drag to rotate • Scroll to zoom
         </div>
       </div>
       
       <div className="absolute top-4 left-4">
-        <div className="text-xs text-gray-400 bg-slate-800/70 px-3 py-2 rounded-lg backdrop-blur-sm">
+        <div className={`text-xs px-3 py-2 rounded-lg backdrop-blur-sm transition-colors duration-300 ${
+          isDark 
+            ? 'text-gray-400 bg-slate-800/70' 
+            : 'text-gray-600 bg-white/70'
+        }`}>
           All {allSkills.length} Skills • Hover for details
         </div>
       </div>

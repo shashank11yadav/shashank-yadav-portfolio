@@ -2,8 +2,9 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Minimize2, Maximize2, Terminal as TerminalIcon } from 'lucide-react';
+import { X, Terminal as TerminalIcon } from 'lucide-react';
 import { personalInfo, experiences, projects, skills } from '@/data/portfolio';
+import { useTheme } from '@/contexts/ThemeContext';
 
 interface Command {
   input: string;
@@ -20,181 +21,187 @@ interface TerminalState {
   historyIndex: number;
 }
 
-const COMMANDS = {
+const COMMANDS = (isDark: boolean) => ({
   help: {
     description: 'Show available commands',
     execute: () => (
       <div className="space-y-3">
-        <div className="text-cyan-300 font-semibold text-lg">📚 Available Commands</div>
+        <div className={`font-semibold text-lg ${
+          isDark ? 'text-cyan-300' : 'text-cyan-600'
+        }`}>📚 Available Commands</div>
         
         {/* Portfolio Commands */}
         <div>
-          <div className="text-yellow-400 font-semibold mb-2">👤 Portfolio & Info:</div>
+          <div className={`font-semibold mb-2 ${
+            isDark ? 'text-yellow-400' : 'text-yellow-600'
+          }`}>👤 Portfolio & Info:</div>
           <div className="grid grid-cols-1 gap-1 text-sm ml-2">
             <div className="flex gap-4">
-              <span className="text-green-400 font-mono w-20">about</span>
-              <span className="text-gray-300">Display information about me</span>
+              <span className={`font-mono w-20 ${
+                isDark ? 'text-green-400' : 'text-green-600'
+              }`}>about</span>
+              <span className={isDark ? 'text-gray-300' : 'text-gray-700'}>Display information about me</span>
             </div>
             <div className="flex gap-4">
-              <span className="text-green-400 font-mono w-20">skills</span>
-              <span className="text-gray-300">List technical skills</span>
+              <span className={`font-mono w-20 ${isDark ? 'text-green-400' : 'text-green-600'}`}>skills</span>
+              <span className={isDark ? 'text-gray-300' : 'text-gray-700'}>List technical skills</span>
             </div>
             <div className="flex gap-4">
-              <span className="text-green-400 font-mono w-20">projects</span>
-              <span className="text-gray-300">Show recent projects</span>
+              <span className={`font-mono w-20 ${isDark ? 'text-green-400' : 'text-green-600'}`}>projects</span>
+              <span className={isDark ? 'text-gray-300' : 'text-gray-700'}>Show recent projects</span>
             </div>
             <div className="flex gap-4">
-              <span className="text-green-400 font-mono w-20">contact</span>
-              <span className="text-gray-300">Get contact information</span>
+              <span className={`font-mono w-20 ${isDark ? 'text-green-400' : 'text-green-600'}`}>contact</span>
+              <span className={isDark ? 'text-gray-300' : 'text-gray-700'}>Get contact information</span>
             </div>
             <div className="flex gap-4">
-              <span className="text-green-400 font-mono w-20">resume</span>
-              <span className="text-gray-300">View and download resume</span>
+              <span className={`font-mono w-20 ${isDark ? 'text-green-400' : 'text-green-600'}`}>resume</span>
+              <span className={isDark ? 'text-gray-300' : 'text-gray-700'}>View and download resume</span>
             </div>
             <div className="flex gap-4">
-              <span className="text-green-400 font-mono w-20">experience</span>
-              <span className="text-gray-300">Show work experience</span>
+              <span className={`font-mono w-20 ${isDark ? 'text-green-400' : 'text-green-600'}`}>experience</span>
+              <span className={isDark ? 'text-gray-300' : 'text-gray-700'}>Show work experience</span>
             </div>
             <div className="flex gap-4">
-              <span className="text-green-400 font-mono w-20">hire</span>
-              <span className="text-gray-300">Information about hiring me</span>
+              <span className={`font-mono w-20 ${isDark ? 'text-green-400' : 'text-green-600'}`}>hire</span>
+              <span className={isDark ? 'text-gray-300' : 'text-gray-700'}>Information about hiring me</span>
             </div>
           </div>
         </div>
 
         {/* Navigation & Search */}
         <div>
-          <div className="text-blue-400 font-semibold mb-2">🧭 Navigation & Search:</div>
+          <div className={`font-semibold mb-2 ${isDark ? 'text-blue-400' : 'text-blue-600'}`}>🧭 Navigation & Search:</div>
           <div className="grid grid-cols-1 gap-1 text-sm ml-2">
             <div className="flex gap-4">
-              <span className="text-green-400 font-mono w-20">nav &lt;section&gt;</span>
-              <span className="text-gray-300">Navigate to section (about|skills|projects|contact)</span>
+              <span className={`font-mono w-20 ${isDark ? 'text-green-400' : 'text-green-600'}`}>nav &lt;section&gt;</span>
+              <span className={isDark ? 'text-gray-300' : 'text-gray-700'}>Navigate to section (about|skills|projects|contact)</span>
             </div>
             <div className="flex gap-4">
-              <span className="text-green-400 font-mono w-20">grep &lt;term&gt;</span>
-              <span className="text-gray-300">Search through skills and projects</span>
+              <span className={`font-mono w-20 ${isDark ? 'text-green-400' : 'text-green-600'}`}>grep &lt;term&gt;</span>
+              <span className={isDark ? 'text-gray-300' : 'text-gray-700'}>Search through skills and projects</span>
             </div>
             <div className="flex gap-4">
-              <span className="text-green-400 font-mono w-20">stats</span>
-              <span className="text-gray-300">Show portfolio statistics</span>
+              <span className={`font-mono w-20 ${isDark ? 'text-green-400' : 'text-green-600'}`}>stats</span>
+              <span className={isDark ? 'text-gray-300' : 'text-gray-700'}>Show portfolio statistics</span>
             </div>
           </div>
         </div>
 
         {/* System Commands */}
         <div>
-          <div className="text-purple-400 font-semibold mb-2">💻 System Commands:</div>
+          <div className={`font-semibold mb-2 ${isDark ? 'text-purple-400' : 'text-purple-500'}`}>💻 System Commands:</div>
           <div className="grid grid-cols-1 gap-1 text-sm ml-2">
             <div className="flex gap-4">
-              <span className="text-green-400 font-mono w-20">ls</span>
-              <span className="text-gray-300">List portfolio sections</span>
+              <span className={`font-mono w-20 ${isDark ? 'text-green-400' : 'text-green-600'}`}>ls</span>
+              <span className={isDark ? 'text-gray-300' : 'text-gray-700'}>List portfolio sections</span>
             </div>
             <div className="flex gap-4">
-              <span className="text-green-400 font-mono w-20">pwd</span>
-              <span className="text-gray-300">Print working directory</span>
+              <span className={`font-mono w-20 ${isDark ? 'text-green-400' : 'text-green-600'}`}>pwd</span>
+              <span className={isDark ? 'text-gray-300' : 'text-gray-700'}>Print working directory</span>
             </div>
             <div className="flex gap-4">
-              <span className="text-green-400 font-mono w-20">whoami</span>
-              <span className="text-gray-300">Display current user</span>
+              <span className={`font-mono w-20 ${isDark ? 'text-green-400' : 'text-green-600'}`}>whoami</span>
+              <span className={isDark ? 'text-gray-300' : 'text-gray-700'}>Display current user</span>
             </div>
             <div className="flex gap-4">
-              <span className="text-green-400 font-mono w-20">date</span>
-              <span className="text-gray-300">Show current date and time</span>
+              <span className={`font-mono w-20 ${isDark ? 'text-green-400' : 'text-green-600'}`}>date</span>
+              <span className={isDark ? 'text-gray-300' : 'text-gray-700'}>Show current date and time</span>
             </div>
             <div className="flex gap-4">
-              <span className="text-green-400 font-mono w-20">echo &lt;text&gt;</span>
-              <span className="text-gray-300">Display text</span>
+              <span className={`font-mono w-20 ${isDark ? 'text-green-400' : 'text-green-600'}`}>echo &lt;text&gt;</span>
+              <span className={isDark ? 'text-gray-300' : 'text-gray-700'}>Display text</span>
             </div>
             <div className="flex gap-4">
-              <span className="text-green-400 font-mono w-20">clear</span>
-              <span className="text-gray-300">Clear terminal output</span>
+              <span className={`font-mono w-20 ${isDark ? 'text-green-400' : 'text-green-600'}`}>clear</span>
+              <span className={isDark ? 'text-gray-300' : 'text-gray-700'}>Clear terminal output</span>
             </div>
           </div>
         </div>
 
         {/* Developer Tools */}
         <div>
-          <div className="text-pink-400 font-semibold mb-2">🛠️ Developer Tools:</div>
+          <div className={`font-semibold mb-2 ${isDark ? 'text-pink-400' : 'text-pink-600'}`}>🛠️ Developer Tools:</div>
           <div className="grid grid-cols-1 gap-1 text-sm ml-2">
             <div className="flex gap-4">
-              <span className="text-green-400 font-mono w-20">git status</span>
-              <span className="text-gray-300">Show git repository status</span>
+              <span className={`font-mono w-20 ${isDark ? 'text-green-400' : 'text-green-600'}`}>git status</span>
+              <span className={isDark ? 'text-gray-300' : 'text-gray-700'}>Show git repository status</span>
             </div>
             <div className="flex gap-4">
-              <span className="text-green-400 font-mono w-20">git log</span>
-              <span className="text-gray-300">Show commit history</span>
+              <span className={`font-mono w-20 ${isDark ? 'text-green-400' : 'text-green-600'}`}>git log</span>
+              <span className={isDark ? 'text-gray-300' : 'text-gray-700'}>Show commit history</span>
             </div>
             <div className="flex gap-4">
-              <span className="text-green-400 font-mono w-20">seo</span>
-              <span className="text-gray-300">Show SEO and performance metrics</span>
+              <span className={`font-mono w-20 ${isDark ? 'text-green-400' : 'text-green-600'}`}>seo</span>
+              <span className={isDark ? 'text-gray-300' : 'text-gray-700'}>Show SEO and performance metrics</span>
             </div>
             <div className="flex gap-4">
-              <span className="text-green-400 font-mono w-20">theme</span>
-              <span className="text-gray-300">Display current theme info</span>
+              <span className={`font-mono w-20 ${isDark ? 'text-green-400' : 'text-green-600'}`}>theme</span>
+              <span className={isDark ? 'text-gray-300' : 'text-gray-700'}>Display current theme info</span>
             </div>
           </div>
         </div>
 
         {/* Fun & Interactive Commands */}
         <div>
-          <div className="text-orange-400 font-semibold mb-2">🎉 Fun & Interactive Commands:</div>
+          <div className={`font-semibold mb-2 ${isDark ? 'text-orange-400' : 'text-orange-600'}`}>🎉 Fun & Interactive Commands:</div>
           <div className="grid grid-cols-1 gap-1 text-sm ml-2">
             <div className="flex gap-4">
-              <span className="text-green-400 font-mono w-20">joke</span>
-              <span className="text-gray-300">Get a random programming joke</span>
+              <span className={`font-mono w-20 ${isDark ? 'text-green-400' : 'text-green-600'}`}>joke</span>
+              <span className={isDark ? 'text-gray-300' : 'text-gray-700'}>Get a random programming joke</span>
             </div>
             <div className="flex gap-4">
-              <span className="text-green-400 font-mono w-20">fact</span>
-              <span className="text-gray-300">Display a random tech fact</span>
+              <span className={`font-mono w-20 ${isDark ? 'text-green-400' : 'text-green-600'}`}>fact</span>
+              <span className={isDark ? 'text-gray-300' : 'text-gray-700'}>Display a random tech fact</span>
             </div>
             <div className="flex gap-4">
-              <span className="text-green-400 font-mono w-20">quiz</span>
-              <span className="text-gray-300">Take a quick tech quiz</span>
+              <span className={`font-mono w-20 ${isDark ? 'text-green-400' : 'text-green-600'}`}>quiz</span>
+              <span className={isDark ? 'text-gray-300' : 'text-gray-700'}>Take a quick tech quiz</span>
             </div>
             <div className="flex gap-4">
-              <span className="text-green-400 font-mono w-20">time</span>
-              <span className="text-gray-300">Show current time with timezone info</span>
+              <span className={`font-mono w-20 ${isDark ? 'text-green-400' : 'text-green-600'}`}>time</span>
+              <span className={isDark ? 'text-gray-300' : 'text-gray-700'}>Show current time with timezone info</span>
             </div>
             <div className="flex gap-4">
-              <span className="text-green-400 font-mono w-20">ps</span>
-              <span className="text-gray-300">Show running "processes"</span>
+              <span className={`font-mono w-20 ${isDark ? 'text-green-400' : 'text-green-600'}`}>ps</span>
+              <span className={isDark ? 'text-gray-300' : 'text-gray-700'}>Show running "processes"</span>
             </div>
             <div className="flex gap-4">
-              <span className="text-green-400 font-mono w-20">npm install</span>
-              <span className="text-gray-300">NPM package manager with easter eggs</span>
+              <span className={`font-mono w-20 ${isDark ? 'text-green-400' : 'text-green-600'}`}>npm install</span>
+              <span className={isDark ? 'text-gray-300' : 'text-gray-700'}>NPM package manager with easter eggs</span>
             </div>
             <div className="flex gap-4">
-              <span className="text-green-400 font-mono w-20">sudo &lt;cmd&gt;</span>
-              <span className="text-gray-300">Execute commands with "elevated" privileges</span>
+              <span className={`font-mono w-20 ${isDark ? 'text-green-400' : 'text-green-600'}`}>sudo &lt;cmd&gt;</span>
+              <span className={isDark ? 'text-gray-300' : 'text-gray-700'}>Execute commands with "elevated" privileges</span>
             </div>
           </div>
           
           {/* Sudo Examples */}
-          <div className="mt-3 ml-2 p-3 bg-slate-800/30 rounded-lg border-l-2 border-orange-400">
-            <div className="text-orange-300 font-semibold mb-2 text-xs">🔥 Try these sudo commands:</div>
+          <div className={`mt-3 ml-2 p-3 rounded-lg border-l-2 border-orange-400 ${isDark ? 'bg-slate-800/30' : 'bg-slate-200/50'}`}>
+            <div className={`font-semibold mb-2 text-xs ${isDark ? 'text-orange-300' : 'text-orange-700'}`}>🔥 Try these sudo commands:</div>
             <div className="grid grid-cols-1 gap-1 text-xs">
-              <div className="text-gray-400">• <span className="text-green-300 font-mono">sudo rm -rf /</span> - AI security protection</div>
-              <div className="text-gray-400">• <span className="text-green-300 font-mono">sudo apt install girlfriend</span> - Package manager humor</div>
-              <div className="text-gray-400">• <span className="text-green-300 font-mono">sudo make coffee</span> - Hardware not found</div>
-              <div className="text-gray-400">• <span className="text-green-300 font-mono">sudo give me job</span> - Instant job offer!</div>
-              <div className="text-gray-400">• <span className="text-green-300 font-mono">sudo hack pentagon</span> - FBI wants your location</div>
-              <div className="text-gray-400">• <span className="text-green-300 font-mono">sudo shutdown</span> - Can't stop the awesome</div>
+              <div className={isDark ? 'text-gray-400' : 'text-gray-600'}>• <span className={`font-mono ${isDark ? 'text-green-300' : 'text-green-700'}`}>sudo rm -rf /</span> - AI security protection</div>
+              <div className={isDark ? 'text-gray-400' : 'text-gray-600'}>• <span className={`font-mono ${isDark ? 'text-green-300' : 'text-green-700'}`}>sudo apt install girlfriend</span> - Package manager humor</div>
+              <div className={isDark ? 'text-gray-400' : 'text-gray-600'}>• <span className={`font-mono ${isDark ? 'text-green-300' : 'text-green-700'}`}>sudo make coffee</span> - Hardware not found</div>
+              <div className={isDark ? 'text-gray-400' : 'text-gray-600'}>• <span className={`font-mono ${isDark ? 'text-green-300' : 'text-green-700'}`}>sudo give me job</span> - Instant job offer!</div>
+              <div className={isDark ? 'text-gray-400' : 'text-gray-600'}>• <span className={`font-mono ${isDark ? 'text-green-300' : 'text-green-700'}`}>sudo hack pentagon</span> - FBI wants your location</div>
+              <div className={isDark ? 'text-gray-400' : 'text-gray-600'}>• <span className={`font-mono ${isDark ? 'text-green-300' : 'text-green-700'}`}>sudo shutdown</span> - Can't stop the awesome</div>
             </div>
           </div>
           
           {/* NPM Examples */}
-          <div className="mt-3 ml-2 p-3 bg-slate-700/30 rounded-lg border-l-2 border-blue-400">
-            <div className="text-blue-300 font-semibold mb-2 text-xs">📦 Try installing these packages:</div>
+          <div className={`mt-3 ml-2 p-3 rounded-lg border-l-2 border-blue-400 ${isDark ? 'bg-slate-700/30' : 'bg-slate-200/50'}`}>
+            <div className={`font-semibold mb-2 text-xs ${isDark ? 'text-blue-300' : 'text-blue-600'}`}>📦 Try installing these packages:</div>
             <div className="grid grid-cols-1 gap-1 text-xs">
-              <div className="text-gray-400">• <span className="text-green-300 font-mono">npm install motivation</span> - Boost productivity</div>
-              <div className="text-gray-400">• <span className="text-green-300 font-mono">npm install coffee</span> - Restore energy</div>
-              <div className="text-gray-400">• <span className="text-green-300 font-mono">npm install skills</span> - Become 10x developer</div>
-              <div className="text-gray-400">• <span className="text-green-300 font-mono">npm install confidence</span> - Defeat imposter syndrome</div>
+              <div className={isDark ? 'text-gray-400' : 'text-gray-600'}>• <span className={`font-mono ${isDark ? 'text-green-300' : 'text-green-700'}`}>npm install motivation</span> - Boost productivity</div>
+              <div className={isDark ? 'text-gray-400' : 'text-gray-600'}>• <span className={`font-mono ${isDark ? 'text-green-300' : 'text-green-700'}`}>npm install coffee</span> - Restore energy</div>
+              <div className={isDark ? 'text-gray-400' : 'text-gray-600'}>• <span className={`font-mono ${isDark ? 'text-green-300' : 'text-green-700'}`}>npm install skills</span> - Become 10x developer</div>
+              <div className={isDark ? 'text-gray-400' : 'text-gray-600'}>• <span className={`font-mono ${isDark ? 'text-green-300' : 'text-green-700'}`}>npm install confidence</span> - Defeat imposter syndrome</div>
             </div>
           </div>
         </div>
 
-        <div className="text-gray-400 text-xs mt-4 border-t border-gray-700 pt-2">
+        <div className={`text-xs mt-4 border-t pt-2 ${isDark ? 'text-gray-400 border-gray-700' : 'text-gray-600 border-gray-300'}`}>
           💡 <strong>Pro Tips:</strong> Use Tab for autocomplete • ↑/↓ for command history • Ctrl+` to toggle terminal
         </div>
       </div>
@@ -204,13 +211,13 @@ const COMMANDS = {
     description: 'Display information about me',
     execute: () => (
       <div className="space-y-2">
-        <div className="text-cyan-300 font-semibold">{personalInfo.name}</div>
-        <div className="text-gray-300">🎯 {personalInfo.title}</div>
-        <div className="text-gray-300">📍 {personalInfo.contact.location}</div>
-        <div className="text-gray-300">🎓 Master's in Computer Science</div>
-        <div className="text-gray-300">💻 Full-Stack Developer & AI Enthusiast</div>
-        <div className="text-gray-300">🚀 Passionate about building scalable applications</div>
-        <div className="text-gray-300">🌟 700+ LeetCode problems solved</div>
+        <div className={`font-semibold ${isDark ? 'text-cyan-300' : 'text-cyan-600'}`}>{personalInfo.name}</div>
+        <div className={isDark ? 'text-gray-300' : 'text-gray-700'}>🎯 {personalInfo.title}</div>
+        <div className={isDark ? 'text-gray-300' : 'text-gray-700'}>📍 {personalInfo.contact.location}</div>
+        <div className={isDark ? 'text-gray-300' : 'text-gray-700'}>🎓 Master's in Computer Science</div>
+        <div className={isDark ? 'text-gray-300' : 'text-gray-700'}>💻 Full-Stack Developer & AI Enthusiast</div>
+        <div className={isDark ? 'text-gray-300' : 'text-gray-700'}>🚀 Passionate about building scalable applications</div>
+        <div className={isDark ? 'text-gray-300' : 'text-gray-700'}>🌟 700+ LeetCode problems solved</div>
       </div>
     )
   },
@@ -218,14 +225,16 @@ const COMMANDS = {
     description: 'List technical skills',
     execute: () => (
       <div className="space-y-2">
-        <div className="text-cyan-300 font-semibold">Technical Arsenal:</div>
+        <div className={`font-semibold ${
+          isDark ? 'text-cyan-300' : 'text-cyan-600'
+        }`}>Technical Arsenal:</div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-1 text-sm">
-          <div><span className="text-yellow-400">Frontend:</span> React, Next.js, TypeScript, Tailwind</div>
-          <div><span className="text-green-400">Backend:</span> Node.js, Python, Java, Express</div>
-          <div><span className="text-blue-400">Database:</span> PostgreSQL, MongoDB, Redis</div>
-          <div><span className="text-purple-400">AI/ML:</span> TensorFlow, PyTorch, OpenCV, LangChain</div>
-          <div><span className="text-cyan-400">Cloud:</span> AWS, Docker, Kubernetes</div>
-          <div><span className="text-pink-400">Tools:</span> Git, VS Code, Figma, Linux</div>
+          <div><span className={isDark ? 'text-yellow-400' : 'text-yellow-600'}>Frontend:</span> React, Next.js, TypeScript, Tailwind</div>
+          <div><span className={isDark ? 'text-green-400' : 'text-green-600'}>Backend:</span> Node.js, Python, Java, Express</div>
+          <div><span className={isDark ? 'text-blue-400' : 'text-blue-600'}>Database:</span> PostgreSQL, MongoDB, Redis</div>
+          <div><span className={isDark ? 'text-purple-400' : 'text-purple-500'}>AI/ML:</span> TensorFlow, PyTorch, OpenCV, LangChain</div>
+          <div><span className={isDark ? 'text-cyan-400' : 'text-cyan-600'}>Cloud:</span> AWS, Docker, Kubernetes</div>
+          <div><span className={isDark ? 'text-pink-400' : 'text-pink-600'}>Tools:</span> Git, VS Code, Figma, Linux</div>
         </div>
       </div>
     )
@@ -234,19 +243,21 @@ const COMMANDS = {
     description: 'Show recent projects',
     execute: () => (
       <div className="space-y-2">
-        <div className="text-cyan-300 font-semibold">Featured Projects:</div>
+        <div className={`font-semibold ${
+          isDark ? 'text-cyan-300' : 'text-cyan-600'
+        }`}>Featured Projects:</div>
         <div className="space-y-1 text-sm">
           <div>
-            <span className="text-green-400">1. Pitch Perfect</span> - AI presentation coaching platform
+            <span className={isDark ? 'text-green-400' : 'text-green-600'}>1. Pitch Perfect</span> - <span className={isDark ? 'text-gray-300' : 'text-gray-700'}>AI presentation coaching platform</span>
           </div>
           <div>
-            <span className="text-blue-400">2. AccuScan</span> - Advanced OCR document processing system
+            <span className={isDark ? 'text-blue-400' : 'text-blue-600'}>2. AccuScan</span> - <span className={isDark ? 'text-gray-300' : 'text-gray-700'}>Advanced OCR document processing system</span>
           </div>
           <div>
-            <span className="text-purple-400">3. LipNet</span> - Lip reading neural network implementation
+            <span className={isDark ? 'text-purple-400' : 'text-purple-500'}>3. LipNet</span> - <span className={isDark ? 'text-gray-300' : 'text-gray-700'}>Lip reading neural network implementation</span>
           </div>
         </div>
-        <div className="text-gray-400 text-xs mt-2">💡 Use 'nav projects' to view the projects section</div>
+        <div className={`text-xs mt-2 ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>💡 Use 'nav projects' to view the projects section</div>
       </div>
     )
   },
@@ -254,17 +265,17 @@ const COMMANDS = {
     description: 'Get contact information',
     execute: () => (
       <div className="space-y-2">
-        <div className="text-cyan-300 font-semibold">Let's Connect:</div>
+        <div className={`font-semibold ${isDark ? 'text-cyan-300' : 'text-cyan-600'}`}>Let's Connect:</div>
         <div className="space-y-1 text-sm">
-          <div className="text-gray-300">📧 {personalInfo.contact.email}</div>
-          <div className="text-gray-300">💼 {personalInfo.contact.social.linkedin}</div>
-          <div className="text-gray-300">🐙 {personalInfo.contact.social.github}</div>
-          <div className="text-gray-300">🐦 {personalInfo.contact.social.twitter}</div>
-          <div className="text-gray-300">📸 {personalInfo.contact.social.instagram}</div>
-          <div className="text-gray-300">💻 {personalInfo.contact.social.leetcode}</div>
-          <div className="text-gray-300">📍 {personalInfo.contact.location}</div>
+          <div className={isDark ? 'text-gray-300' : 'text-gray-700'}>📧 {personalInfo.contact.email}</div>
+          <div className={isDark ? 'text-gray-300' : 'text-gray-700'}>💼 {personalInfo.contact.social.linkedin}</div>
+          <div className={isDark ? 'text-gray-300' : 'text-gray-700'}>🐙 {personalInfo.contact.social.github}</div>
+          <div className={isDark ? 'text-gray-300' : 'text-gray-700'}>🐦 {personalInfo.contact.social.twitter}</div>
+          <div className={isDark ? 'text-gray-300' : 'text-gray-700'}>📸 {personalInfo.contact.social.instagram}</div>
+          <div className={isDark ? 'text-gray-300' : 'text-gray-700'}>💻 {personalInfo.contact.social.leetcode}</div>
+          <div className={isDark ? 'text-gray-300' : 'text-gray-700'}>📍 {personalInfo.contact.location}</div>
         </div>
-        <div className="text-gray-400 text-xs mt-2">💡 Use 'nav contact' to open the contact form</div>
+        <div className={`text-xs mt-2 ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>💡 Use 'nav contact' to open the contact form</div>
       </div>
     )
   },
@@ -272,14 +283,14 @@ const COMMANDS = {
     description: 'View and download resume',
     execute: () => (
       <div className="space-y-2">
-        <div className="text-cyan-300 font-semibold">📄 Resume</div>
-        <div className="text-gray-300">Resume is available for download.</div>
-        <div className="text-blue-400 underline cursor-pointer hover:text-blue-300">
+        <div className={`font-semibold ${isDark ? 'text-cyan-300' : 'text-cyan-600'}`}>📄 Resume</div>
+        <div className={isDark ? 'text-gray-300' : 'text-gray-700'}>Resume is available for download.</div>
+        <div className={`underline cursor-pointer transition-colors ${isDark ? 'text-blue-400 hover:text-blue-300' : 'text-blue-600 hover:text-blue-700'}`}>
           <a href={personalInfo.resume} target="_blank" rel="noopener noreferrer">
             🔗 Download Resume (Google Drive)
           </a>
         </div>
-        <div className="text-gray-400 text-xs mt-2">💡 Click the link above to open in new tab</div>
+        <div className={`text-xs mt-2 ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>💡 Click the link above to open in new tab</div>
       </div>
     )
   },
@@ -287,21 +298,21 @@ const COMMANDS = {
     description: 'Show work experience',
     execute: () => (
       <div className="space-y-3">
-        <div className="text-cyan-300 font-semibold">💼 Work Experience</div>
+        <div className={`font-semibold ${isDark ? 'text-cyan-300' : 'text-cyan-600'}`}>💼 Work Experience</div>
         {experiences.map((exp, index) => (
           <div key={exp.id} className="border-l-2 border-gray-600 pl-4 space-y-1">
-            <div className="text-green-400 font-semibold">{exp.title}</div>
-            <div className="text-yellow-400">{exp.company}</div>
-            <div className="text-gray-400 text-sm">{exp.period}</div>
-            <div className="text-gray-300 text-sm">{exp.description}</div>
+            <div className={`font-semibold ${isDark ? 'text-green-400' : 'text-green-600'}`}>{exp.title}</div>
+            <div className={isDark ? 'text-yellow-400' : 'text-yellow-600'}>{exp.company}</div>
+            <div className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>{exp.period}</div>
+            <div className={`text-sm ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>{exp.description}</div>
             <div className="flex flex-wrap gap-1 mt-2">
               {exp.technologies.slice(0, 5).map(tech => (
-                <span key={tech} className="text-xs bg-slate-700 text-cyan-400 px-2 py-1 rounded">
+                <span key={tech} className={`text-xs px-2 py-1 rounded ${isDark ? 'bg-slate-700 text-cyan-400' : 'bg-slate-200 text-cyan-600'}`}>
                   {tech}
                 </span>
               ))}
               {exp.technologies.length > 5 && (
-                <span className="text-xs text-gray-500">+{exp.technologies.length - 5} more</span>
+                <span className={`text-xs ${isDark ? 'text-gray-500' : 'text-gray-600'}`}>+{exp.technologies.length - 5} more</span>
               )}
             </div>
           </div>
@@ -322,19 +333,19 @@ const COMMANDS = {
 
       return (
         <div className="space-y-2">
-          <div className="text-cyan-300 font-semibold">📊 Portfolio Statistics</div>
+          <div className={`font-semibold ${isDark ? 'text-cyan-300' : 'text-cyan-600'}`}>📊 Portfolio Statistics</div>
           <div className="grid grid-cols-2 gap-4 text-sm">
             <div className="space-y-1">
-              <div className="text-green-400">Projects: <span className="text-white">{totalProjects}</span></div>
-              <div className="text-yellow-400">Featured: <span className="text-white">{featuredProjects}</span></div>
-              <div className="text-purple-400">Skills: <span className="text-white">{totalSkills}</span></div>
-              <div className="text-cyan-400">Categories: <span className="text-white">{categories}</span></div>
+              <div className={isDark ? 'text-green-400' : 'text-green-600'}>Projects: <span className={isDark ? 'text-white' : 'text-gray-800'}>{totalProjects}</span></div>
+              <div className={isDark ? 'text-yellow-400' : 'text-yellow-600'}>Featured: <span className={isDark ? 'text-white' : 'text-gray-800'}>{featuredProjects}</span></div>
+              <div className={isDark ? 'text-purple-400' : 'text-purple-500'}>Skills: <span className={isDark ? 'text-white' : 'text-gray-800'}>{totalSkills}</span></div>
+              <div className={isDark ? 'text-cyan-400' : 'text-cyan-600'}>Categories: <span className={isDark ? 'text-white' : 'text-gray-800'}>{categories}</span></div>
             </div>
             <div className="space-y-1">
-              <div className="text-green-400">Expert (90%+): <span className="text-white">{expertSkills}</span></div>
-              <div className="text-blue-400">Advanced (80%+): <span className="text-white">{advancedSkills}</span></div>
-              <div className="text-pink-400">Experience: <span className="text-white">{totalYears}+ years</span></div>
-              <div className="text-orange-400">LeetCode: <span className="text-white">700+</span></div>
+              <div className={isDark ? 'text-green-400' : 'text-green-600'}>Expert (90%+): <span className={isDark ? 'text-white' : 'text-gray-800'}>{expertSkills}</span></div>
+              <div className={isDark ? 'text-blue-400' : 'text-blue-600'}>Advanced (80%+): <span className={isDark ? 'text-white' : 'text-gray-800'}>{advancedSkills}</span></div>
+              <div className={isDark ? 'text-pink-400' : 'text-pink-600'}>Experience: <span className={isDark ? 'text-white' : 'text-gray-800'}>{totalYears}+ years</span></div>
+              <div className={isDark ? 'text-orange-400' : 'text-orange-600'}>LeetCode: <span className={isDark ? 'text-white' : 'text-gray-800'}>700+</span></div>
             </div>
           </div>
         </div>
@@ -366,13 +377,13 @@ const COMMANDS = {
 
       return (
         <div className="space-y-3">
-          <div className="text-cyan-300 font-semibold">🔍 Search Results for "{searchTerm}"</div>
+          <div className={`font-semibold ${isDark ? 'text-cyan-300' : 'text-cyan-600'}`}>🔍 Search Results for "{searchTerm}"</div>
           
           {matchingSkills.length > 0 && (
             <div>
-              <div className="text-green-400 font-semibold mb-1">Skills ({matchingSkills.length}):</div>
+              <div className={`font-semibold mb-1 ${isDark ? 'text-green-400' : 'text-green-600'}`}>Skills ({matchingSkills.length}):</div>
               {matchingSkills.map(skill => (
-                <div key={skill.name} className="text-gray-300 ml-2">
+                <div key={skill.name} className={`ml-2 ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
                   • {skill.name} ({skill.level}%) - {skill.category}
                 </div>
               ))}
@@ -381,9 +392,9 @@ const COMMANDS = {
 
           {matchingProjects.length > 0 && (
             <div>
-              <div className="text-blue-400 font-semibold mb-1">Projects ({matchingProjects.length}):</div>
+              <div className={`font-semibold mb-1 ${isDark ? 'text-blue-400' : 'text-blue-600'}`}>Projects ({matchingProjects.length}):</div>
               {matchingProjects.map(project => (
-                <div key={project.id} className="text-gray-300 ml-2">
+                <div key={project.id} className={`ml-2 ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
                   • {project.title} - {project.description.substring(0, 80)}...
                 </div>
               ))}
@@ -401,8 +412,8 @@ const COMMANDS = {
       if (!subcommand || subcommand === 'status') {
         return (
           <div className="space-y-1 font-mono text-sm">
-            <div className="text-green-400">On branch main</div>
-            <div className="text-green-400">Your branch is up to date with 'origin/main'.</div>
+            <div className={isDark ? 'text-green-400' : 'text-green-600'}>On branch main</div>
+            <div className={isDark ? 'text-green-400' : 'text-green-600'}>Your branch is up to date with 'origin/main'.</div>
             <div className="mt-2">Changes not staged for commit:</div>
             <div className="text-red-400 ml-2">modified:   skills/NextJS.tsx (level increased to 95%)</div>
             <div className="text-red-400 ml-2">modified:   projects/new_project.tsx</div>
@@ -419,13 +430,13 @@ const COMMANDS = {
       if (subcommand === 'log') {
         return (
           <div className="space-y-1 font-mono text-sm">
-            <div className="text-yellow-400">commit a1b2c3d (HEAD -{'>'} main)</div>
-            <div className="text-gray-300">Author: {personalInfo.name} {'<'}{personalInfo.contact.email}{'>'}</div>
-            <div className="text-gray-300">Date: {new Date().toDateString()}</div>
-            <div className="text-gray-300 ml-4">feat: Add advanced 3D animations and terminal CLI</div>
-            <div className="text-yellow-400 mt-2">commit d4e5f6g</div>
-            <div className="text-gray-300">Date: {new Date(Date.now() - 86400000).toDateString()}</div>
-            <div className="text-gray-300 ml-4">fix: Optimize project filtering animations</div>
+            <div className={isDark ? 'text-yellow-400' : 'text-yellow-600'}>commit a1b2c3d (HEAD -{'>'} main)</div>
+            <div className={isDark ? 'text-gray-300' : 'text-gray-700'}>Author: {personalInfo.name} {'<'}{personalInfo.contact.email}{'>'}</div>
+            <div className={isDark ? 'text-gray-300' : 'text-gray-700'}>Date: {new Date().toDateString()}</div>
+            <div className={`ml-4 ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>feat: Add advanced 3D animations and terminal CLI</div>
+            <div className={`mt-2 ${isDark ? 'text-yellow-400' : 'text-yellow-600'}`}>commit d4e5f6g</div>
+            <div className={isDark ? 'text-gray-300' : 'text-gray-700'}>Date: {new Date(Date.now() - 86400000).toDateString()}</div>
+            <div className={`ml-4 ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>fix: Optimize project filtering animations</div>
           </div>
         );
       }
@@ -464,25 +475,25 @@ const COMMANDS = {
     description: 'Show SEO and performance metrics',
     execute: () => (
       <div className="space-y-2">
-        <div className="text-cyan-300 font-semibold">🚀 SEO & Performance Metrics</div>
+        <div className={`font-semibold ${isDark ? 'text-cyan-300' : 'text-cyan-600'}`}>🚀 SEO & Performance Metrics</div>
         <div className="grid grid-cols-2 gap-4 text-sm">
           <div className="space-y-1">
-            <div className="text-green-400">Lighthouse Score</div>
-            <div className="text-white ml-2">Performance: 98/100 ⚡</div>
-            <div className="text-white ml-2">Accessibility: 100/100 ♿</div>
-            <div className="text-white ml-2">Best Practices: 100/100 ✅</div>
-            <div className="text-white ml-2">SEO: 100/100 📈</div>
+            <div className={isDark ? 'text-green-400' : 'text-green-600'}>Lighthouse Score</div>
+            <div className={`ml-2 ${isDark ? 'text-white' : 'text-gray-800'}`}>Performance: 98/100 ⚡</div>
+            <div className={`ml-2 ${isDark ? 'text-white' : 'text-gray-800'}`}>Accessibility: 100/100 ♿</div>
+            <div className={`ml-2 ${isDark ? 'text-white' : 'text-gray-800'}`}>Best Practices: 100/100 ✅</div>
+            <div className={`ml-2 ${isDark ? 'text-white' : 'text-gray-800'}`}>SEO: 100/100 📈</div>
           </div>
           <div className="space-y-1">
-            <div className="text-blue-400">Tech Stack</div>
-            <div className="text-white ml-2">• Next.js 14 (SSR)</div>
-            <div className="text-white ml-2">• TypeScript</div>
-            <div className="text-white ml-2">• Tailwind CSS</div>
-            <div className="text-white ml-2">• Three.js</div>
-            <div className="text-white ml-2">• Framer Motion</div>
+            <div className={isDark ? 'text-blue-400' : 'text-blue-600'}>Tech Stack</div>
+            <div className={`ml-2 ${isDark ? 'text-white' : 'text-gray-800'}`}>• Next.js 14 (SSR)</div>
+            <div className={`ml-2 ${isDark ? 'text-white' : 'text-gray-800'}`}>• TypeScript</div>
+            <div className={`ml-2 ${isDark ? 'text-white' : 'text-gray-800'}`}>• Tailwind CSS</div>
+            <div className={`ml-2 ${isDark ? 'text-white' : 'text-gray-800'}`}>• Three.js</div>
+            <div className={`ml-2 ${isDark ? 'text-white' : 'text-gray-800'}`}>• Framer Motion</div>
           </div>
         </div>
-        <div className="text-gray-400 text-xs mt-2">
+        <div className={`text-xs mt-2 ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
           📊 Built for performance and user experience
         </div>
       </div>
@@ -570,15 +581,15 @@ const COMMANDS = {
       
       return (
         <div className="space-y-3">
-          <div className="text-cyan-300 font-semibold">🧠 Tech Quiz Time!</div>
-          <div className="text-white font-semibold">{randomQuestion.q}</div>
+          <div className={`font-semibold ${isDark ? 'text-cyan-300' : 'text-cyan-600'}`}>🧠 Tech Quiz Time!</div>
+          <div className={`font-semibold ${isDark ? 'text-white' : 'text-gray-800'}`}>{randomQuestion.q}</div>
           <div className="space-y-1 text-sm">
             {randomQuestion.options.map(option => (
-              <div key={option} className="text-gray-300">{option}</div>
+              <div key={option} className={isDark ? 'text-gray-300' : 'text-gray-700'}>{option}</div>
             ))}
           </div>
-          <div className="text-green-400 text-sm">Answer: {randomQuestion.a}</div>
-          <div className="text-gray-400 text-xs">💡 Run 'quiz' again for another question!</div>
+          <div className={`text-sm ${isDark ? 'text-green-400' : 'text-green-600'}`}>Answer: {randomQuestion.a}</div>
+          <div className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>💡 Run 'quiz' again for another question!</div>
         </div>
       );
     }
@@ -589,12 +600,12 @@ const COMMANDS = {
       const now = new Date();
       return (
         <div className="space-y-2">
-          <div className="text-cyan-300 font-semibold">⏰ Current Time</div>
+          <div className={`font-semibold ${isDark ? 'text-cyan-300' : 'text-cyan-600'}`}>⏰ Current Time</div>
           <div className="font-mono space-y-1">
-            <div className="text-green-400">Local Time: {now.toLocaleTimeString()}</div>
-            <div className="text-blue-400">UTC Time: {now.toUTCString()}</div>
-            <div className="text-purple-400">Timezone: {Intl.DateTimeFormat().resolvedOptions().timeZone}</div>
-            <div className="text-yellow-400">Unix Timestamp: {Math.floor(now.getTime() / 1000)}</div>
+            <div className={isDark ? 'text-green-400' : 'text-green-600'}>Local Time: {now.toLocaleTimeString()}</div>
+            <div className={isDark ? 'text-blue-400' : 'text-blue-600'}>UTC Time: {now.toUTCString()}</div>
+            <div className={isDark ? 'text-purple-400' : 'text-purple-500'}>Timezone: {Intl.DateTimeFormat().resolvedOptions().timeZone}</div>
+            <div className={isDark ? 'text-yellow-400' : 'text-yellow-600'}>Unix Timestamp: {Math.floor(now.getTime() / 1000)}</div>
           </div>
         </div>
       );
@@ -604,39 +615,39 @@ const COMMANDS = {
     description: 'Show running "processes"',
     execute: () => (
       <div className="space-y-2">
-        <div className="text-cyan-300 font-semibold">📊 Running Processes</div>
+        <div className={`font-semibold ${isDark ? 'text-cyan-300' : 'text-cyan-600'}`}>📊 Running Processes</div>
         <div className="font-mono text-xs space-y-1">
-          <div className="grid grid-cols-4 gap-4 text-gray-400 border-b border-gray-600 pb-1">
+          <div className={`grid grid-cols-4 gap-4 border-b pb-1 ${isDark ? 'text-gray-400 border-gray-600' : 'text-gray-600 border-gray-400'}`}>
             <span>PID</span>
             <span>PROCESS</span>
             <span>CPU%</span>
             <span>STATUS</span>
           </div>
-          <div className="grid grid-cols-4 gap-4 text-green-400">
+          <div className={`grid grid-cols-4 gap-4 ${isDark ? 'text-green-400' : 'text-green-600'}`}>
             <span>1337</span>
             <span>awesome_portfolio</span>
             <span>98.5%</span>
             <span>Running</span>
           </div>
-          <div className="grid grid-cols-4 gap-4 text-blue-400">
+          <div className={`grid grid-cols-4 gap-4 ${isDark ? 'text-blue-400' : 'text-blue-600'}`}>
             <span>2048</span>
             <span>skill_renderer</span>
             <span>15.2%</span>
             <span>Active</span>
           </div>
-          <div className="grid grid-cols-4 gap-4 text-purple-400">
+          <div className={`grid grid-cols-4 gap-4 ${isDark ? 'text-purple-400' : 'text-purple-500'}`}>
             <span>4096</span>
             <span>3d_animations</span>
             <span>22.8%</span>
             <span>Running</span>
           </div>
-          <div className="grid grid-cols-4 gap-4 text-yellow-400">
+          <div className={`grid grid-cols-4 gap-4 ${isDark ? 'text-yellow-400' : 'text-yellow-600'}`}>
             <span>8192</span>
             <span>terminal_cli</span>
             <span>5.1%</span>
             <span>Active</span>
           </div>
-          <div className="grid grid-cols-4 gap-4 text-cyan-400">
+          <div className={`grid grid-cols-4 gap-4 ${isDark ? 'text-cyan-400' : 'text-cyan-600'}`}>
             <span>1024</span>
             <span>coffee_maker</span>
             <span>0.0%</span>
@@ -672,9 +683,9 @@ const COMMANDS = {
       if (!subcommand) {
         return (
           <div className="space-y-2">
-            <div className="text-cyan-300 font-semibold">📦 NPM Package Manager</div>
-            <div className="text-gray-300">Usage: npm install {'<package>'}</div>
-            <div className="text-yellow-400 text-sm">Try installing: motivation, coffee, skills, luck, patience, react, typescript</div>
+            <div className={`font-semibold ${isDark ? 'text-cyan-300' : 'text-cyan-600'}`}>📦 NPM Package Manager</div>
+            <div className={isDark ? 'text-gray-300' : 'text-gray-700'}>Usage: npm install {'<package>'}</div>
+            <div className={`text-sm ${isDark ? 'text-yellow-400' : 'text-yellow-600'}`}>Try installing: motivation, coffee, skills, luck, patience, react, typescript</div>
           </div>
         );
       }
@@ -686,26 +697,26 @@ const COMMANDS = {
     description: 'Information about hiring me',
     execute: () => (
       <div className="space-y-3">
-        <div className="text-cyan-300 font-semibold">💼 Ready to Hire Shashank?</div>
+        <div className={`font-semibold ${isDark ? 'text-cyan-300' : 'text-cyan-600'}`}>💼 Ready to Hire Shashank?</div>
         <div className="space-y-2">
-          <div className="text-green-400 font-semibold">🎯 What I Bring:</div>
-          <div className="text-gray-300 ml-2">• Master's in Computer Science</div>
-          <div className="text-gray-300 ml-2">• Full-Stack Development (React, Node.js, Python)</div>
-          <div className="text-gray-300 ml-2">• AI/ML Expertise (TensorFlow, PyTorch)</div>
-          <div className="text-gray-300 ml-2">• Cloud Architecture (AWS, Docker, Kubernetes)</div>
-          <div className="text-gray-300 ml-2">• 700+ LeetCode problems solved</div>
+          <div className={`font-semibold ${isDark ? 'text-green-400' : 'text-green-600'}`}>🎯 What I Bring:</div>
+          <div className={`ml-2 ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>• Master's in Computer Science</div>
+          <div className={`ml-2 ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>• Full-Stack Development (React, Node.js, Python)</div>
+          <div className={`ml-2 ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>• AI/ML Expertise (TensorFlow, PyTorch)</div>
+          <div className={`ml-2 ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>• Cloud Architecture (AWS, Docker, Kubernetes)</div>
+          <div className={`ml-2 ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>• 700+ LeetCode problems solved</div>
           
-          <div className="text-blue-400 font-semibold mt-3">🚀 Current Status:</div>
-          <div className="text-gray-300 ml-2">✅ Open to new opportunities</div>
-          <div className="text-gray-300 ml-2">✅ Available for full-time positions</div>
-          <div className="text-gray-300 ml-2">✅ Remote/Hybrid/On-site flexible</div>
+          <div className={`font-semibold mt-3 ${isDark ? 'text-blue-400' : 'text-blue-600'}`}>🚀 Current Status:</div>
+          <div className={`ml-2 ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>✅ Open to new opportunities</div>
+          <div className={`ml-2 ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>✅ Available for full-time positions</div>
+          <div className={`ml-2 ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>✅ Remote/Hybrid/On-site flexible</div>
           
-          <div className="text-purple-400 font-semibold mt-3">📞 Let's Connect:</div>
-          <div className="text-gray-300 ml-2">📧 {personalInfo.contact.email}</div>
-          <div className="text-gray-300 ml-2">💼 {personalInfo.contact.social.linkedin}</div>
-          <div className="text-gray-300 ml-2">📄 Use 'resume' command for full details</div>
+          <div className={`font-semibold mt-3 ${isDark ? 'text-purple-400' : 'text-purple-500'}`}>📞 Let's Connect:</div>
+          <div className={`ml-2 ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>📧 {personalInfo.contact.email}</div>
+          <div className={`ml-2 ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>💼 {personalInfo.contact.social.linkedin}</div>
+          <div className={`ml-2 ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>📄 Use 'resume' command for full details</div>
           
-          <div className="text-yellow-400 text-sm mt-3">
+          <div className={`text-sm mt-3 ${isDark ? 'text-yellow-400' : 'text-yellow-600'}`}>
             💡 Pro tip: Type 'nav contact' to open the contact form!
           </div>
         </div>
@@ -751,10 +762,10 @@ const COMMANDS = {
     description: 'List portfolio sections',
     execute: () => (
       <div className="grid grid-cols-2 gap-2 font-mono text-sm">
-        <div className="text-blue-400">📁 about/</div>
-        <div className="text-green-400">📁 skills/</div>
-        <div className="text-purple-400">📁 projects/</div>
-        <div className="text-cyan-400">📁 contact/</div>
+        <div className={isDark ? 'text-blue-400' : 'text-blue-600'}>📁 about/</div>
+        <div className={isDark ? 'text-green-400' : 'text-green-600'}>📁 skills/</div>
+        <div className={isDark ? 'text-purple-400' : 'text-purple-500'}>📁 projects/</div>
+        <div className={isDark ? 'text-cyan-400' : 'text-cyan-600'}>📁 contact/</div>
       </div>
     )
   },
@@ -777,16 +788,17 @@ const COMMANDS = {
     description: 'Display current theme info',
     execute: () => (
       <div className="space-y-1 text-sm">
-        <div className="text-cyan-300">🎨 Current Theme: Cyberpunk Dark</div>
-        <div className="text-gray-300">• Primary: Cyan (#06b6d4)</div>
-        <div className="text-gray-300">• Secondary: Purple (#8b5cf6)</div>
-        <div className="text-gray-300">• Background: Slate (#0f172a)</div>
+        <div className={isDark ? 'text-cyan-300' : 'text-cyan-600'}>🎨 Current Theme: {isDark ? 'Cyberpunk Dark' : 'Clean Light'}</div>
+        <div className={isDark ? 'text-gray-300' : 'text-gray-700'}>• Primary: Cyan ({isDark ? '#06b6d4' : '#0891b2'})</div>
+        <div className={isDark ? 'text-gray-300' : 'text-gray-700'}>• Secondary: Purple ({isDark ? '#8b5cf6' : '#7c3aed'})</div>
+        <div className={isDark ? 'text-gray-300' : 'text-gray-700'}>• Background: {isDark ? 'Slate (#0f172a)' : 'Light (#f8fafc)'}</div>
       </div>
     )
   }
-} as const;
+});
 
 export default function Terminal() {
+  const { isDark } = useTheme();
   const [state, setState] = useState<TerminalState>({
     isOpen: false,
     isMinimized: false,
@@ -795,6 +807,17 @@ export default function Terminal() {
     commandHistory: [],
     historyIndex: -1
   });
+
+  // Clear terminal history when theme changes
+  useEffect(() => {
+    setState(prev => ({
+      ...prev,
+      history: [],
+      commandHistory: [],
+      historyIndex: -1,
+      input: ''
+    }));
+  }, [isDark]);
 
   const inputRef = useRef<HTMLInputElement>(null);
   const outputRef = useRef<HTMLDivElement>(null);
@@ -822,14 +845,15 @@ export default function Terminal() {
       return;
     }
 
-    if (COMMANDS[commandName as keyof typeof COMMANDS]) {
-      const command = COMMANDS[commandName as keyof typeof COMMANDS];
+    const commands = COMMANDS(isDark);
+    if (commands[commandName as keyof typeof commands]) {
+      const command = commands[commandName as keyof typeof commands];
       output = command.execute(args as any);
     } else {
       output = (
-        <div className="text-red-400">
+        <div className={isDark ? 'text-red-400' : 'text-red-600'}>
           Command not found: <span className="font-mono">{commandName}</span>
-          <div className="text-gray-400 text-sm mt-1">Type 'help' for available commands</div>
+          <div className={`text-sm mt-1 ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>Type 'help' for available commands</div>
         </div>
       );
     }
@@ -842,7 +866,7 @@ export default function Terminal() {
 
     addToHistory(newCommand);
     setState(prev => ({ ...prev, input: '', historyIndex: -1 }));
-  }, [addToHistory]);
+  }, [addToHistory, isDark]);
 
   const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
     if (e.key === 'Enter') {
@@ -918,9 +942,17 @@ export default function Terminal() {
         input: '',
         output: (
           <div className="space-y-2">
-            <div className="text-cyan-300 font-bold text-lg">🚀 Welcome to {personalInfo.name}'s Portfolio Terminal</div>
-            <div className="text-gray-300">Type <span className="text-green-400 font-mono">help</span> to see available commands.</div>
-            <div className="text-gray-400 text-sm">
+            <div className={`font-bold text-lg transition-colors duration-300 ${
+              isDark ? 'text-cyan-300' : 'text-cyan-600'
+            }`}>🚀 Welcome to {personalInfo.name}'s Portfolio Terminal</div>
+            <div className={`transition-colors duration-300 ${
+              isDark ? 'text-gray-300' : 'text-gray-700'
+            }`}>Type <span className={`font-mono transition-colors duration-300 ${
+              isDark ? 'text-green-400' : 'text-green-600'
+            }`}>help</span> to see available commands.</div>
+            <div className={`text-sm transition-colors duration-300 ${
+              isDark ? 'text-gray-400' : 'text-gray-600'
+            }`}>
               💡 Tips: Use Tab for autocomplete, ↑/↓ for history, Ctrl+` to toggle
             </div>
           </div>
@@ -929,7 +961,7 @@ export default function Terminal() {
       };
       addToHistory(welcomeCommand);
     }
-  }, [state.isOpen, state.history.length, addToHistory]);
+  }, [state.isOpen, state.history.length, addToHistory, isDark]);
 
   return (
     <>
@@ -940,12 +972,20 @@ export default function Terminal() {
           isOpen: true, 
           isMinimized: false 
         }))}
-        className="fixed bottom-6 right-6 z-50 bg-slate-900/90 backdrop-blur-sm border border-slate-600 rounded-full p-4 hover:bg-slate-800/90 transition-all duration-300 group shadow-xl"
+        className={`fixed bottom-6 right-6 z-50 backdrop-blur-sm border rounded-full p-4 transition-all duration-300 group shadow-xl ${
+          isDark 
+            ? 'bg-slate-900/90 border-slate-600 hover:bg-slate-800/90'
+            : 'bg-slate-100/90 border-slate-300 hover:bg-slate-200/90'
+        }`}
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.9 }}
         title="Open Terminal (Ctrl + `)"
       >
-        <TerminalIcon className="w-6 h-6 text-cyan-400 group-hover:text-cyan-300 transition-colors" />
+        <TerminalIcon className={`w-6 h-6 transition-colors ${
+          isDark 
+            ? 'text-cyan-400 group-hover:text-cyan-300' 
+            : 'text-cyan-600 group-hover:text-cyan-700'
+        }`} />
         <div className="absolute -top-2 -right-2 w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
       </motion.button>
 
@@ -961,7 +1001,11 @@ export default function Terminal() {
             }}
             exit={{ opacity: 0, scale: 0.8, y: 50 }}
             transition={{ type: "spring", damping: 20, stiffness: 300 }}
-            className={`fixed inset-4 md:inset-6 lg:inset-8 z-50 bg-slate-950/95 backdrop-blur-xl border border-slate-700 rounded-xl shadow-2xl overflow-hidden ${
+            className={`fixed inset-4 md:inset-6 lg:inset-8 z-50 backdrop-blur-xl border rounded-xl shadow-2xl overflow-hidden transition-colors duration-300 ${
+              isDark 
+                ? 'bg-slate-950/95 border-slate-700'
+                : 'bg-white/95 border-slate-300'
+            } ${
               state.isMinimized ? 'pointer-events-none' : ''
             }`}
             style={{
@@ -970,16 +1014,30 @@ export default function Terminal() {
             }}
           >
             {/* Terminal Header */}
-            <div className="flex items-center justify-between px-6 py-4 bg-slate-900/80 border-b border-slate-700">
+            <div className={`flex items-center justify-between px-6 py-4 border-b transition-colors duration-300 ${
+              isDark 
+                ? 'bg-slate-900/80 border-slate-700'
+                : 'bg-slate-100/80 border-slate-300'
+            }`}>
               <div className="flex items-center gap-4">
                 <div className="flex gap-2">
-                  <div className="w-3 h-3 bg-red-500 rounded-full"></div>
-                  <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
-                  <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+                  <div className={`w-3 h-3 rounded-full transition-colors duration-300 ${
+                    isDark ? 'bg-red-500' : 'bg-red-600'
+                  }`}></div>
+                  <div className={`w-3 h-3 rounded-full transition-colors duration-300 ${
+                    isDark ? 'bg-yellow-500' : 'bg-yellow-600'
+                  }`}></div>
+                  <div className={`w-3 h-3 rounded-full transition-colors duration-300 ${
+                    isDark ? 'bg-green-500' : 'bg-green-600'
+                  }`}></div>
                 </div>
                 <div className="flex items-center gap-2">
-                  <TerminalIcon className="w-5 h-5 text-cyan-400" />
-                  <span className="text-gray-200 font-mono font-semibold">
+                  <TerminalIcon className={`w-5 h-5 transition-colors duration-300 ${
+                    isDark ? 'text-cyan-400' : 'text-cyan-600'
+                  }`} />
+                  <span className={`font-mono font-semibold transition-colors duration-300 ${
+                    isDark ? 'text-gray-200' : 'text-gray-800'
+                  }`}>
                     shashank@portfolio-terminal
                   </span>
                 </div>
@@ -987,25 +1045,15 @@ export default function Terminal() {
               
               <div className="flex items-center gap-1">
                 <button
-                  onClick={() => setState(prev => ({ ...prev, isMinimized: !prev.isMinimized }))}
-                  className="p-2 hover:bg-slate-700 rounded-md transition-colors"
-                  title="Minimize"
-                >
-                  <Minimize2 className="w-4 h-4 text-gray-400" />
-                </button>
-                <button
-                  onClick={() => setState(prev => ({ ...prev, isMinimized: false }))}
-                  className="p-2 hover:bg-slate-700 rounded-md transition-colors"
-                  title="Maximize"
-                >
-                  <Maximize2 className="w-4 h-4 text-gray-400" />
-                </button>
-                <button
                   onClick={() => setState(prev => ({ ...prev, isOpen: false }))}
-                  className="p-2 hover:bg-red-600 rounded-md transition-colors"
+                  className={`p-2 hover:bg-red-600 rounded-md transition-colors ${
+                    isDark ? '' : 'hover:bg-red-100'
+                  }`}
                   title="Close"
                 >
-                  <X className="w-4 h-4 text-gray-400 hover:text-white" />
+                  <X className={`w-4 h-4 transition-colors duration-300 ${
+                    isDark ? 'text-gray-400 hover:text-white' : 'text-gray-600 hover:text-gray-800'
+                  }`} />
                 </button>
               </div>
             </div>
@@ -1028,43 +1076,69 @@ export default function Terminal() {
                       className="space-y-2"
                     >
                       {cmd.input && (
-                        <div className="flex items-center gap-2 text-gray-300">
-                          <span className="text-green-400 font-bold">➜</span>
-                          <span className="text-cyan-400">~</span>
-                          <span className="text-gray-200">{cmd.input}</span>
-                          <span className="text-gray-500 text-xs ml-auto">
+                        <div className={`flex items-center gap-2 transition-colors duration-300 ${
+                          isDark ? 'text-gray-300' : 'text-gray-700'
+                        }`}>
+                          <span className={`font-bold transition-colors duration-300 ${
+                            isDark ? 'text-green-400' : 'text-green-600'
+                          }`}>➜</span>
+                          <span className={`transition-colors duration-300 ${
+                            isDark ? 'text-cyan-400' : 'text-cyan-600'
+                          }`}>~</span>
+                          <span className={`transition-colors duration-300 ${
+                            isDark ? 'text-gray-200' : 'text-gray-800'
+                          }`}>{cmd.input}</span>
+                          <span className={`text-xs ml-auto transition-colors duration-300 ${
+                            isDark ? 'text-gray-500' : 'text-gray-600'
+                          }`}>
                             {cmd.timestamp.toLocaleTimeString()}
                           </span>
                         </div>
                       )}
-                      <div className="ml-6 text-gray-200">{cmd.output}</div>
+                      <div className={`ml-6 transition-colors duration-300 ${
+                        isDark ? 'text-gray-200' : 'text-gray-800'
+                      }`}>{cmd.output}</div>
                     </motion.div>
                   ))}
                 </div>
 
                 {/* Input Area */}
-                <div className="p-6 border-t border-slate-700 bg-slate-900/50">
+                <div className={`p-6 border-t transition-colors duration-300 ${
+                  isDark 
+                    ? 'border-slate-700 bg-slate-900/50'
+                    : 'border-slate-300 bg-slate-50/50'
+                }`}>
                   <div className="flex items-center gap-2 font-mono">
-                    <span className="text-green-400 font-bold">➜</span>
-                    <span className="text-cyan-400">~</span>
+                    <span className={`font-bold transition-colors duration-300 ${
+                      isDark ? 'text-green-400' : 'text-green-600'
+                    }`}>➜</span>
+                    <span className={`transition-colors duration-300 ${
+                      isDark ? 'text-cyan-400' : 'text-cyan-600'
+                    }`}>~</span>
                     <input
                       ref={inputRef}
                       type="text"
                       value={state.input}
                       onChange={(e) => setState(prev => ({ ...prev, input: e.target.value }))}
                       onKeyDown={handleKeyDown}
-                      className="flex-1 bg-transparent text-gray-200 outline-none text-sm"
+                      className={`flex-1 bg-transparent outline-none text-sm transition-colors duration-300 ${
+                        isDark ? 'text-gray-200' : 'text-gray-800'
+                      }`}
                       placeholder="Type a command..."
                       autoComplete="off"
                       spellCheck="false"
                     />
                     <motion.div 
-                      className="w-2 h-5 bg-cyan-400 rounded-sm"
+                      className={`w-2 h-5 rounded-sm transition-colors duration-300 ${
+                        isDark ? 'bg-cyan-400' : 'bg-cyan-600'
+                      }`}
                       animate={{ opacity: [1, 0] }}
                       transition={{ duration: 1, repeat: Infinity, repeatType: "reverse" }}
                     />
                   </div>
-                  <div className="text-xs text-gray-500 mt-3 flex items-center justify-between">
+                  <div className={`text-xs mt-3 flex items-center justify-between transition-colors duration-300 ${
+                    isDark ? 'text-gray-500' : 'text-gray-600'
+                  }`}>
                     <span>Press Ctrl+` to close</span>
                     <span>Tab: autocomplete | ↑/↓: history</span>
                   </div>

@@ -6,6 +6,7 @@ import { useInView } from 'react-intersection-observer';
 import { Sparkles } from 'lucide-react';
 import { projects } from '@/data/portfolio';
 import { Project } from '@/types';
+import { useTheme } from '@/contexts/ThemeContext';
 import { 
   AnimatedWebsite, 
   AnimatedMobile, 
@@ -16,6 +17,7 @@ import {
 const categories = ['all', 'web', 'mobile', 'ai'] as const;
 
 function ProjectCard({ project, index }: { project: Project; index: number }) {
+  const { isDark } = useTheme();
   const [isHovered, setIsHovered] = useState(false);
 
   return (
@@ -26,12 +28,20 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
       whileHover={{ y: -10 }}
       onHoverStart={() => setIsHovered(true)}
       onHoverEnd={() => setIsHovered(false)}
-      className="group relative bg-slate-800/50 backdrop-blur-sm rounded-xl overflow-hidden border border-slate-700 hover:border-cyan-400/50 transition-all duration-500"
+      className={`group relative backdrop-blur-sm rounded-xl overflow-hidden border hover:border-cyan-400/50 transition-all duration-500 ${
+        isDark 
+          ? 'bg-slate-800/50 border-slate-700' 
+          : 'bg-slate-100/60 border-slate-200'
+      }`}
     >
         {/* Project image/preview */}
         <div className="relative h-48 bg-gradient-to-br from-cyan-500/20 to-purple-500/20 overflow-hidden">
           {/* Animated background */}
-          <div className="absolute inset-0 bg-gradient-to-br from-slate-800 to-slate-900">
+          <div className={`absolute inset-0 transition-colors duration-300 ${
+            isDark 
+              ? 'bg-gradient-to-br from-slate-800 to-slate-900'
+              : 'bg-gradient-to-br from-slate-100 to-slate-200'
+          }`}>
             {/* Floating particles */}
             <div className="absolute inset-0 opacity-30">
               <div className="absolute top-4 left-4 w-2 h-2 bg-cyan-400 rounded-full animate-pulse"></div>
@@ -75,7 +85,11 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.8 }}
-                className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/60 to-black/80 flex flex-col items-center justify-center gap-4"
+                className={`absolute inset-0 flex flex-col items-center justify-center gap-4 ${
+                  isDark 
+                    ? 'bg-gradient-to-b from-black/40 via-black/60 to-black/80'
+                    : 'bg-gradient-to-b from-white/60 via-white/70 to-white/80'
+                }`}
               >
                 {/* Ripple effect */}
                 <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/20 to-purple-500/20 animate-pulse"></div>
@@ -89,7 +103,11 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
                     initial={{ y: 20, opacity: 0 }}
                     animate={{ y: 0, opacity: 1 }}
                     transition={{ delay: 0.1 }}
-                    className="relative z-10 flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-cyan-500 to-purple-500 rounded-full hover:from-cyan-400 hover:to-purple-400 transition-all duration-300 transform hover:scale-110 shadow-lg hover:shadow-cyan-500/25 font-semibold"
+                    className={`relative z-10 flex items-center gap-2 px-6 py-3 rounded-full text-white transition-all duration-300 transform hover:scale-110 shadow-lg font-semibold ${
+                      isDark 
+                        ? 'bg-gradient-to-r from-cyan-500 to-purple-500 hover:from-cyan-400 hover:to-purple-400 hover:shadow-cyan-500/25'
+                        : 'bg-gradient-to-r from-cyan-600 to-purple-600 hover:from-cyan-500 hover:to-purple-500 hover:shadow-cyan-600/25'
+                    }`}
                   >
                     <AnimatedGitHub size={18} />
                     <span className="text-sm">View Code</span>
@@ -122,10 +140,24 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
           {/* Category badge */}
           <div className="absolute top-4 right-4">
             <span className={`px-3 py-1 text-xs rounded-full font-semibold ${
-              project.category === 'web' ? 'bg-blue-500/20 text-blue-400 border border-blue-400/30' :
-              project.category === 'mobile' ? 'bg-green-500/20 text-green-400 border border-green-400/30' :
-              project.category === 'ai' ? 'bg-purple-500/20 text-purple-400 border border-purple-400/30' :
-              'bg-gray-500/20 text-gray-400 border border-gray-400/30'
+              project.category === 'web' ? 
+                isDark 
+                  ? 'bg-blue-500/20 text-blue-400 border border-blue-400/30' 
+                  : 'bg-blue-500/30 text-blue-700 border border-blue-500/50'
+                :
+              project.category === 'mobile' ? 
+                isDark 
+                  ? 'bg-green-500/20 text-green-400 border border-green-400/30' 
+                  : 'bg-green-500/30 text-green-700 border border-green-500/50'
+                :
+              project.category === 'ai' ? 
+                isDark 
+                  ? 'bg-purple-500/20 text-purple-400 border border-purple-400/30' 
+                  : 'bg-purple-500/30 text-purple-700 border border-purple-500/50'
+                :
+                isDark 
+                  ? 'bg-gray-500/20 text-gray-400 border border-gray-400/30'
+                  : 'bg-gray-500/30 text-gray-700 border border-gray-500/50'
             }`}>
               {project.category}
             </span>
@@ -134,11 +166,17 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
 
         {/* Project content */}
         <div className="p-6">
-          <h3 className="text-xl font-bold text-white mb-2 group-hover:text-cyan-400 transition-colors">
+          <h3 className={`text-xl font-bold mb-2 transition-colors ${
+            isDark ? 'group-hover:text-cyan-400' : 'group-hover:text-cyan-600'
+          } ${
+            isDark ? 'text-white' : 'text-gray-800'
+          }`}>
             {project.title}
           </h3>
           
-          <p className="text-gray-300 mb-4 line-clamp-2">
+          <p className={`mb-4 line-clamp-2 transition-colors duration-300 ${
+            isDark ? 'text-gray-300' : 'text-gray-600'
+          }`}>
             {project.description}
           </p>
 
@@ -151,13 +189,21 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
                 whileInView={{ opacity: 1, scale: 1 }}
                 transition={{ delay: techIndex * 0.1 }}
                 whileHover={{ scale: 1.05 }}
-                className="px-3 py-1 bg-gradient-to-r from-slate-700 to-slate-600 text-cyan-400 text-xs rounded-full border border-cyan-400/30 hover:border-cyan-400/60 transition-all duration-300 font-medium hover:shadow-lg hover:shadow-cyan-400/20"
+                className={`px-3 py-1 text-xs rounded-full border border-cyan-400/30 hover:border-cyan-400/60 transition-all duration-300 font-medium hover:shadow-lg hover:shadow-cyan-400/20 ${
+                  isDark 
+                    ? 'bg-gradient-to-r from-slate-700 to-slate-600 text-cyan-400'
+                    : 'bg-gradient-to-r from-slate-100 to-slate-200 text-cyan-700'
+                }`}
               >
                 {tech}
               </motion.span>
             ))}
             {project.technologies.length > 4 && (
-              <span className="px-3 py-1 bg-gradient-to-r from-slate-700 to-slate-600 text-gray-400 text-xs rounded-full font-medium">
+              <span className={`px-3 py-1 text-xs rounded-full font-medium transition-colors duration-300 ${
+                isDark 
+                  ? 'bg-gradient-to-r from-slate-700 to-slate-600 text-gray-400'
+                  : 'bg-gradient-to-r from-slate-100 to-slate-200 text-gray-600'
+              }`}>
                 +{project.technologies.length - 4} more
               </span>
             )}
@@ -170,7 +216,11 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
                 href={project.github}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-gradient-to-r from-cyan-500 to-purple-500 rounded-lg font-semibold hover:from-cyan-400 hover:to-purple-400 hover:scale-105 transition-all duration-300 text-sm transform hover:shadow-lg hover:shadow-cyan-500/25"
+                className={`w-full flex items-center justify-center gap-2 px-4 py-2 rounded-lg font-semibold text-white hover:scale-105 transition-all duration-300 text-sm transform hover:shadow-lg ${
+                  isDark 
+                    ? 'bg-gradient-to-r from-cyan-500 to-purple-500 hover:from-cyan-400 hover:to-purple-400 hover:shadow-cyan-500/25'
+                    : 'bg-gradient-to-r from-cyan-600 to-purple-600 hover:from-cyan-500 hover:to-purple-500 hover:shadow-cyan-600/25'
+                }`}
               >
                 <AnimatedGitHub size={16} />
                 View Code
@@ -183,6 +233,7 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
 }
 
 export default function ProjectsSection() {
+  const { isDark } = useTheme();
   const [activeCategory, setActiveCategory] = useState<typeof categories[number]>('all');
   const [ref, inView] = useInView({
     threshold: 0.2,
@@ -196,7 +247,17 @@ export default function ProjectsSection() {
   const featuredProjects = projects.filter(project => project.featured);
 
   return (
-    <section id="projects" className="py-20 px-6 bg-slate-900/30">
+    <section 
+      id="projects" 
+      className={`py-20 px-6 transition-all duration-700 ${
+        isDark ? 'relative bg-slate-900/30' : ''
+      }`}
+      style={{
+        background: !isDark 
+          ? 'linear-gradient(135deg, #f8fafc 0%, #ddd6fe 50%, #e0e7ff 100%)'
+          : undefined
+      }}
+    >
       <div className="max-w-7xl mx-auto">
         <motion.div
           ref={ref}
@@ -205,10 +266,16 @@ export default function ProjectsSection() {
           transition={{ duration: 0.8 }}
           className="text-center mb-12"
         >
-          <h2 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent mb-4">
-            Featured Projects
+          <h2 className={`text-4xl md:text-5xl font-bold bg-clip-text text-transparent mb-4 ${
+            isDark 
+              ? 'bg-gradient-to-r from-cyan-400 to-purple-500'
+              : 'bg-gradient-to-r from-cyan-600 to-purple-600'
+          }`}>
+            Technical Projects
           </h2>
-          <p className="text-lg text-gray-300 max-w-2xl mx-auto">
+          <p className={`text-lg max-w-2xl mx-auto transition-colors duration-300 ${
+            isDark ? 'text-gray-300' : 'text-gray-600'
+          }`}>
             A showcase of my best work across different technologies and domains
           </p>
         </motion.div>
@@ -230,7 +297,9 @@ export default function ProjectsSection() {
               ⭐ Featured Projects
             </motion.h3>
             <motion.p 
-              className="text-gray-400 max-w-2xl mx-auto"
+              className={`max-w-2xl mx-auto transition-colors duration-300 ${
+                isDark ? 'text-gray-400' : 'text-gray-600'
+              }`}
               initial={{ opacity: 0, y: 20 }}
               animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
               transition={{ delay: 0.4, duration: 0.8 }}
@@ -265,15 +334,23 @@ export default function ProjectsSection() {
                 whileTap={{ scale: 0.95 }}
                 className={`relative px-6 py-3 rounded-full font-semibold transition-all duration-300 ${
                   activeCategory === category
-                    ? 'bg-gradient-to-r from-cyan-500 to-purple-500 text-white shadow-lg shadow-cyan-500/25'
-                    : 'bg-slate-800/70 backdrop-blur-sm text-gray-300 hover:bg-slate-700 border border-slate-600 hover:border-cyan-400/50'
+                    ? isDark 
+                      ? 'bg-gradient-to-r from-cyan-500 to-purple-500 text-white shadow-lg shadow-cyan-500/25'
+                      : 'bg-gradient-to-r from-cyan-600 to-purple-600 text-white shadow-lg shadow-cyan-600/25'
+                    : isDark 
+                      ? 'bg-slate-800/70 backdrop-blur-sm text-gray-300 hover:bg-slate-700 border border-slate-600 hover:border-cyan-400/50'
+                      : 'bg-slate-100/70 backdrop-blur-sm text-gray-700 hover:bg-slate-200 border border-slate-300 hover:border-cyan-400/50'
                 }`}
               >
                 {/* Active indicator */}
                 {activeCategory === category && (
                   <motion.div
                     layoutId="activeCategory"
-                    className="absolute inset-0 bg-gradient-to-r from-cyan-500 to-purple-500 rounded-full"
+                    className={`absolute inset-0 rounded-full ${
+                      isDark 
+                        ? 'bg-gradient-to-r from-cyan-500 to-purple-500'
+                        : 'bg-gradient-to-r from-cyan-600 to-purple-600'
+                    }`}
                     transition={{ type: "spring", stiffness: 300, damping: 30 }}
                   />
                 )}
@@ -317,39 +394,61 @@ export default function ProjectsSection() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ delay: 0.6, duration: 0.8 }}
-          className="mt-16 bg-slate-800/30 backdrop-blur-sm rounded-2xl p-8 border border-slate-700"
+          className={`mt-16 backdrop-blur-sm rounded-2xl p-8 border transition-colors duration-300 ${
+            isDark 
+              ? 'bg-slate-800/30 border-slate-700' 
+              : 'bg-slate-100/40 border-slate-300'
+          }`}
         >
-          <h3 className="text-2xl font-bold mb-8 text-center text-white">Project Statistics</h3>
+          <h3 className={`text-2xl font-bold mb-8 text-center transition-colors duration-300 ${
+            isDark ? 'text-white' : 'text-gray-800'
+          }`}>Project Statistics</h3>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
             <motion.div
               whileHover={{ scale: 1.05 }}
               transition={{ type: "spring", stiffness: 300 }}
             >
-              <div className="text-3xl font-bold text-cyan-400 mb-2">{projects.length}</div>
-              <div className="text-sm text-gray-400">Total Projects</div>
+              <div className={`text-3xl font-bold mb-2 transition-colors duration-300 ${
+                isDark ? 'text-cyan-400' : 'text-cyan-600'
+              }`}>{projects.length}</div>
+              <div className={`text-sm transition-colors duration-300 ${
+                isDark ? 'text-gray-400' : 'text-gray-600'
+              }`}>Total Projects</div>
             </motion.div>
             <motion.div
               whileHover={{ scale: 1.05 }}
               transition={{ type: "spring", stiffness: 300 }}
             >
-              <div className="text-3xl font-bold text-purple-400 mb-2">{featuredProjects.length}</div>
-              <div className="text-sm text-gray-400">Featured</div>
+              <div className={`text-3xl font-bold mb-2 transition-colors duration-300 ${
+                isDark ? 'text-purple-400' : 'text-purple-500'
+              }`}>{featuredProjects.length}</div>
+              <div className={`text-sm transition-colors duration-300 ${
+                isDark ? 'text-gray-400' : 'text-gray-600'
+              }`}>Featured</div>
             </motion.div>
             <motion.div
               whileHover={{ scale: 1.05 }}
               transition={{ type: "spring", stiffness: 300 }}
             >
-              <div className="text-3xl font-bold text-green-400 mb-2">
+              <div className={`text-3xl font-bold mb-2 transition-colors duration-300 ${
+                isDark ? 'text-green-400' : 'text-green-600'
+              }`}>
                 {[...new Set(projects.flatMap(p => p.technologies))].length}
               </div>
-              <div className="text-sm text-gray-400">Technologies</div>
+              <div className={`text-sm transition-colors duration-300 ${
+                isDark ? 'text-gray-400' : 'text-gray-600'
+              }`}>Technologies</div>
             </motion.div>
             <motion.div
               whileHover={{ scale: 1.05 }}
               transition={{ type: "spring", stiffness: 300 }}
             >
-              <div className="text-3xl font-bold text-yellow-400 mb-2">100%</div>
-              <div className="text-sm text-gray-400">Open Source</div>
+              <div className={`text-3xl font-bold mb-2 transition-colors duration-300 ${
+                isDark ? 'text-yellow-400' : 'text-yellow-600'
+              }`}>100%</div>
+              <div className={`text-sm transition-colors duration-300 ${
+                isDark ? 'text-gray-400' : 'text-gray-600'
+              }`}>Open Source</div>
             </motion.div>
           </div>
         </motion.div>

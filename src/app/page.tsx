@@ -8,6 +8,7 @@ import SkillsSection from '@/components/sections/SkillsSection';
 import ExperienceSection from '@/components/sections/ExperienceSection';
 import ProjectsSection from '@/components/sections/ProjectsSection';
 import ContactSection from '@/components/sections/ContactSection';
+import { useTheme } from '@/contexts/ThemeContext';
 
 // Dynamically import 3D components to avoid SSR issues
 const ParticleBackground = dynamic(
@@ -16,8 +17,12 @@ const ParticleBackground = dynamic(
 );
 
 export default function Home() {
+  const { isDark } = useTheme();
+  
   return (
-    <div className="min-h-screen bg-slate-900 text-white overflow-x-hidden">
+    <div className={`min-h-screen overflow-x-hidden transition-colors duration-300 ${
+      isDark ? 'bg-slate-900 text-white' : 'bg-white text-gray-900'
+    }`}>
       {/* 3D Background */}
       <ParticleBackground />
       
@@ -58,12 +63,25 @@ export default function Home() {
       </main>
 
       {/* Footer */}
-      <footer className="py-8 px-6 border-t border-slate-800 bg-slate-900/50 backdrop-blur-sm">
+      <footer 
+        className={`py-8 px-6 text-center transition-all duration-700 ${
+          isDark ? 'text-gray-400 bg-slate-900/30' : 'text-gray-800'
+        }`}
+        style={{
+          background: !isDark 
+            ? 'linear-gradient(135deg, #f8fafc 0%, #ddd6fe 50%, #e0e7ff 100%)'
+            : undefined
+        }}
+      >
         <div className="max-w-6xl mx-auto text-center">
-          <p className="text-gray-400 mb-4">
+          <p className={`mb-4 transition-colors duration-300 ${
+            isDark ? 'text-gray-400' : 'text-gray-700'
+          }`}>
             Built with ❤️ using Next.js, TypeScript, and Framer Motion
           </p>
-          <div className="flex justify-center gap-6 text-sm text-gray-500">
+          <div className={`flex justify-center gap-6 text-sm transition-colors duration-300 ${
+            isDark ? 'text-gray-500' : 'text-gray-800'
+          }`}>
             <span>© 2025 Shashank Yadav</span>
             <span>•</span>
             <span>All rights reserved</span>

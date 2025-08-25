@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { useTheme } from '@/contexts/ThemeContext';
 
 interface TerminalTextProps {
   lines: string[];
@@ -16,6 +17,7 @@ export default function TerminalText({
   className = '', 
   onComplete 
 }: TerminalTextProps) {
+  const { isDark } = useTheme();
   const [currentLineIndex, setCurrentLineIndex] = useState(0);
   const [currentText, setCurrentText] = useState('');
   const [showCursor, setShowCursor] = useState(true);
@@ -58,7 +60,7 @@ export default function TerminalText({
   }, []);
 
   return (
-    <div className={`font-mono text-green-400 ${className}`}>
+    <div className={`font-mono transition-colors duration-300 ${isDark ? 'text-green-400' : 'text-green-400'} ${className}`}>
       {lines.slice(0, currentLineIndex).map((line, index) => (
         <motion.div
           key={index}
@@ -66,14 +68,18 @@ export default function TerminalText({
           animate={{ opacity: 1 }}
           className="mb-2"
         >
-          <span className="text-gray-500">$ </span>
+          <span className={`transition-colors duration-300 ${
+            isDark ? 'text-gray-500' : 'text-gray-200'
+          }`}>$ </span>
           {line}
         </motion.div>
       ))}
       
       {currentLineIndex < lines.length && (
         <div className="mb-2">
-          <span className="text-gray-500">$ </span>
+          <span className={`transition-colors duration-300 ${
+            isDark ? 'text-gray-500' : 'text-gray-200'
+          }`}>$ </span>
           {currentText}
           {showCursor && <span className="animate-pulse">|</span>}
         </div>
@@ -83,9 +89,13 @@ export default function TerminalText({
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          className="mt-4 text-cyan-400"
+          className={`mt-4 transition-colors duration-300 ${
+            isDark ? 'text-cyan-300' : 'text-cyan-400'
+          }`}
         >
-          <span className="text-gray-500">$ </span>
+          <span className={`transition-colors duration-300 ${
+            isDark ? 'text-gray-500' : 'text-gray-200'
+          }`}>$ </span>
           Welcome to my portfolio! 🚀
           {showCursor && <span className="animate-pulse">|</span>}
         </motion.div>

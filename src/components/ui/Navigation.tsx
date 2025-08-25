@@ -3,6 +3,8 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X, Home, User, Code, Briefcase, Mail } from 'lucide-react';
+import { useTheme } from '@/contexts/ThemeContext';
+import { Sun, Moon } from 'lucide-react';
 
 const navigationItems = [
   { id: 'hero', label: 'Home', icon: Home },
@@ -14,6 +16,7 @@ const navigationItems = [
 ];
 
 export default function Navigation() {
+  const { isDark, toggleTheme } = useTheme();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('hero');
   const [scrolled, setScrolled] = useState(false);
@@ -62,7 +65,9 @@ export default function Navigation() {
         animate={{ y: 0 }}
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
           scrolled 
-            ? 'bg-slate-900/95 backdrop-blur-md shadow-lg' 
+            ? isDark 
+              ? 'bg-slate-900/95 backdrop-blur-md shadow-lg'
+              : 'bg-white/95 backdrop-blur-md shadow-lg'
             : 'bg-transparent'
         }`}
       >
@@ -71,7 +76,11 @@ export default function Navigation() {
             {/* Logo */}
             <motion.div
               whileHover={{ scale: 1.05 }}
-              className="text-2xl font-bold bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent cursor-pointer"
+              className={`text-2xl font-bold bg-clip-text text-transparent cursor-pointer ${
+                isDark 
+                  ? 'bg-gradient-to-r from-cyan-400 to-purple-500'
+                  : 'bg-gradient-to-r from-cyan-600 to-purple-600'
+              }`}
               onClick={() => scrollToSection('hero')}
             >
               SY
@@ -85,8 +94,10 @@ export default function Navigation() {
                   onClick={() => scrollToSection(item.id)}
                   className={`relative px-4 py-2 rounded-lg font-medium transition-all duration-300 ${
                     activeSection === item.id
-                      ? 'text-cyan-400'
-                      : 'text-gray-300 hover:text-cyan-400'
+                      ? isDark ? 'text-cyan-400' : 'text-cyan-600'
+                      : isDark 
+                        ? 'text-gray-300 hover:text-cyan-400'
+                        : 'text-gray-700 hover:text-cyan-600'
                   }`}
                 >
                   {item.label}
@@ -100,13 +111,61 @@ export default function Navigation() {
               ))}
             </div>
 
-            {/* Mobile Menu Button */}
-            <button
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="md:hidden p-2 rounded-lg bg-slate-800 hover:bg-slate-700 transition-colors"
-            >
-              {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
-            </button>
+            {/* Theme Toggle & Mobile Menu */}
+            <div className="flex items-center gap-3">
+              {/* Theme Toggle Button */}
+              <motion.button
+                onClick={toggleTheme}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className={`relative p-2 rounded-full transition-all duration-300 ${
+                  scrolled 
+                    ? isDark
+                      ? 'bg-slate-900/95 hover:bg-slate-800/95 text-yellow-400'
+                      : 'bg-white/95 hover:bg-slate-100/95 text-purple-600'
+                    : isDark
+                      ? 'bg-slate-800 hover:bg-slate-700 text-yellow-400'
+                      : 'bg-slate-100 hover:bg-slate-200 text-purple-600'
+                } ${scrolled ? '' : 'shadow-lg'} hover:shadow-xl`}
+                title={isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+              >
+                <AnimatePresence mode="wait">
+                  {isDark ? (
+                    <motion.div
+                      key="sun"
+                      initial={{ rotate: -90, opacity: 0 }}
+                      animate={{ rotate: 0, opacity: 1 }}
+                      exit={{ rotate: 90, opacity: 0 }}
+                      transition={{ duration: 0.3 }}
+                    >
+                      <Sun size={20} />
+                    </motion.div>
+                  ) : (
+                    <motion.div
+                      key="moon"
+                      initial={{ rotate: 90, opacity: 0 }}
+                      animate={{ rotate: 0, opacity: 1 }}
+                      exit={{ rotate: -90, opacity: 0 }}
+                      transition={{ duration: 0.3 }}
+                    >
+                      <Moon size={20} />
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </motion.button>
+
+              {/* Mobile Menu Button */}
+              <button
+                onClick={() => setIsMenuOpen(!isMenuOpen)}
+                className={`md:hidden p-2 rounded-lg transition-colors ${
+                  isDark 
+                    ? 'bg-slate-800 hover:bg-slate-700'
+                    : 'bg-slate-100 hover:bg-slate-200'
+                }`}
+              >
+                {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+              </button>
+            </div>
           </div>
         </div>
       </motion.nav>
@@ -134,7 +193,9 @@ export default function Navigation() {
               initial={{ x: '100%' }}
               animate={{ x: 0 }}
               exit={{ x: '100%' }}
-              className="absolute right-0 top-0 bottom-0 w-80 bg-slate-900 shadow-2xl"
+              className={`absolute right-0 top-0 bottom-0 w-80 shadow-2xl transition-colors duration-300 ${
+                isDark ? 'bg-slate-900' : 'bg-white'
+              }`}
             >
               <div className="p-6">
                 <div className="flex items-center justify-between mb-8">
@@ -143,7 +204,9 @@ export default function Navigation() {
                   </div>
                   <button
                     onClick={() => setIsMenuOpen(false)}
-                    className="p-2 rounded-lg hover:bg-slate-800 transition-colors"
+                    className={`p-2 rounded-lg transition-colors ${
+                      isDark ? 'hover:bg-slate-800' : 'hover:bg-slate-100'
+                    }`}
                   >
                     <X size={24} />
                   </button>
@@ -159,8 +222,12 @@ export default function Navigation() {
                       onClick={() => scrollToSection(item.id)}
                       className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg font-medium transition-all duration-300 ${
                         activeSection === item.id
-                          ? 'bg-cyan-400/10 text-cyan-400 border border-cyan-400/30'
-                          : 'text-gray-300 hover:bg-slate-800 hover:text-cyan-400'
+                          ? `bg-cyan-400/10 border border-cyan-400/30 ${
+                              isDark ? 'text-cyan-400' : 'text-cyan-700'
+                            }`
+                          : isDark 
+                            ? 'text-gray-300 hover:bg-slate-800 hover:text-cyan-400'
+                            : 'text-gray-700 hover:bg-slate-100 hover:text-cyan-600'
                       }`}
                     >
                       <item.icon size={20} />

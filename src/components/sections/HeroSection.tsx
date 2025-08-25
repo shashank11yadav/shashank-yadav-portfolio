@@ -7,6 +7,7 @@ import TerminalText from '@/components/animations/TerminalText';
 import FloatingElements from '@/components/3d/FloatingElements';
 import { personalInfo } from '@/data/portfolio';
 import { getAssetPath } from '@/lib/utils';
+import { useTheme } from '@/contexts/ThemeContext';
 import { 
   AnimatedGitHub, 
   AnimatedLinkedIn, 
@@ -30,6 +31,7 @@ export default function HeroSection() {
   const [showWarning, setShowWarning] = useState(false);
   const [explosionKey, setExplosionKey] = useState(0);
   const [showNameReform, setShowNameReform] = useState(false);
+  const { isDark } = useTheme();
 
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId);
@@ -74,13 +76,21 @@ export default function HeroSection() {
 
   return (
     <section className="min-h-screen flex items-center justify-center relative overflow-hidden">
-      {/* Background gradient */}
-      <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900"></div>
+      {/* Background gradient - responsive to theme */}
+      <div 
+        className="absolute inset-0 transition-all duration-700"
+        style={{
+          background: isDark 
+            ? 'linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #0f172a 100%)'
+            : 'linear-gradient(135deg, #f8fafc 0%, #ddd6fe 50%, #e0e7ff 100%)'
+        }}
+      ></div>
       
       {/* 3D Floating Elements Background */}
       <div className="absolute inset-0 z-0">
         <FloatingElements />
       </div>
+
       
       {/* Content */}
       <div className="relative z-10 max-w-7xl mx-auto px-6 py-8 sm:py-16">
@@ -160,7 +170,11 @@ export default function HeroSection() {
                     </div>
                     
                     {/* Professional Title */}
-                    <div className="text-xl lg:text-2xl font-bold bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent mb-2">
+                    <div className={`text-xl lg:text-2xl font-bold bg-clip-text text-transparent mb-2 ${
+                      isDark 
+                        ? 'bg-gradient-to-r from-cyan-400 to-purple-500'
+                        : 'bg-gradient-to-r from-cyan-600 to-purple-600'
+                    }`}>
                       {personalInfo.name}
                     </div>
                     
@@ -187,13 +201,21 @@ export default function HeroSection() {
                     exit={{ opacity: 0, y: -8, scale: 0.7 }}
                     className="absolute -top-8 left-3/4 transform -translate-x-1/4 z-20"
                   >
-                    <div className="bg-slate-900/90 backdrop-blur-md rounded-md px-2 py-1 border border-red-400/30 whitespace-nowrap">
+                    <div className={`backdrop-blur-md rounded-md px-2 py-1 border whitespace-nowrap ${
+                      isDark 
+                        ? 'bg-slate-900/90 border-red-400/30'
+                        : 'bg-white/90 border-red-500/40'
+                    }`}>
                       <div className="flex items-center space-x-1">
-                        <span className="text-red-400 text-xs font-medium">⚠️ Don't click me!</span>
+                        <span className={`text-xs font-medium ${
+                          isDark ? 'text-red-400' : 'text-red-600'
+                        }`}>⚠️ Don't click me!</span>
                       </div>
                       {/* Tooltip arrow */}
                       <div className="absolute top-full left-1/4 transform -translate-x-1/2">
-                        <div className="w-0 h-0 border-l-2 border-r-2 border-t-2 border-transparent border-t-red-400/30"></div>
+                        <div className={`w-0 h-0 border-l-2 border-r-2 border-t-2 border-transparent ${
+                          isDark ? 'border-t-red-400/30' : 'border-t-red-500/40'
+                        }`}></div>
                       </div>
                     </div>
                   </motion.div>
@@ -211,13 +233,21 @@ export default function HeroSection() {
               >
                 {!isExploding ? (
                   // Normal state
-                  <span className="bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent">
+                  <span className={`bg-clip-text text-transparent ${
+                    isDark 
+                      ? 'bg-gradient-to-r from-cyan-400 to-purple-500'
+                      : 'bg-gradient-to-r from-cyan-600 to-purple-600'
+                  }`}>
                     {personalInfo.name}
                   </span>
                 ) : showNameReform ? (
                   // Name reformation state - smooth fade in with longer duration
                   <motion.span
-                    className="bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent"
+                    className={`bg-clip-text text-transparent ${
+                      isDark 
+                        ? 'bg-gradient-to-r from-cyan-400 to-purple-500'
+                        : 'bg-gradient-to-r from-cyan-600 to-purple-600'
+                    }`}
                     initial={{ opacity: 0, scale: 0.5, y: 30 }}
                     animate={{ opacity: 1, scale: 1, y: 0 }}
                     transition={{ 
@@ -333,7 +363,9 @@ export default function HeroSection() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.6, duration: 0.8 }}
-              className="text-lg lg:text-xl xl:text-2xl text-gray-300 mb-4"
+              className={`text-lg lg:text-xl xl:text-2xl mb-4 transition-colors duration-300 ${
+                isDark ? 'text-gray-300' : 'text-gray-600'
+              }`}
             >
               {personalInfo.title}
             </motion.p>
@@ -342,7 +374,9 @@ export default function HeroSection() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.8, duration: 0.8 }}
-              className="flex items-center gap-2 text-gray-400 mb-8"
+              className={`flex items-center gap-2 mb-8 transition-colors duration-300 ${
+                isDark ? 'text-gray-400' : 'text-gray-700'
+              }`}
             >
               <MapPin size={20} />
               <span>{personalInfo.contact.location}</span>
@@ -367,7 +401,9 @@ export default function HeroSection() {
                   <div className="w-3 h-3 bg-red-500 rounded-full"></div>
                   <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
                   <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-                  <span className="text-gray-400 ml-2">terminal</span>
+                  <span className={`ml-2 transition-colors duration-300 ${
+                    isDark ? 'text-gray-400' : 'text-gray-100'
+                  }`}>terminal</span>
                 </div>
                 <TerminalText lines={terminalLines} speed={80} />
               </div>
@@ -378,7 +414,9 @@ export default function HeroSection() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 1.2, duration: 0.8 }}
-              className="text-gray-300 leading-relaxed text-lg"
+              className={`leading-relaxed text-lg transition-colors duration-300 ${
+                isDark ? 'text-gray-300' : 'text-gray-600'
+              }`}
             >
               {personalInfo.bio}
             </motion.p>
@@ -392,13 +430,21 @@ export default function HeroSection() {
             >
               <button
                 onClick={() => scrollToSection('projects')}
-                className="px-8 py-4 bg-gradient-to-r from-cyan-500 to-purple-500 rounded-xl font-semibold hover:from-cyan-400 hover:to-purple-400 transition-all duration-300 transform hover:scale-105 hover:shadow-lg hover:shadow-cyan-500/25"
+                className={`px-8 py-4 rounded-xl font-semibold text-white transition-all duration-300 transform hover:scale-105 hover:shadow-lg ${
+                  isDark 
+                    ? 'bg-gradient-to-r from-cyan-500 to-purple-500 hover:from-cyan-400 hover:to-purple-400 hover:shadow-cyan-500/25'
+                    : 'bg-gradient-to-r from-cyan-600 to-purple-600 hover:from-cyan-500 hover:to-purple-500 hover:shadow-cyan-600/25'
+                }`}
               >
                 View My Work
               </button>
               <button
                 onClick={() => scrollToSection('contact')}
-                className="px-8 py-4 border-2 border-cyan-400 text-cyan-400 rounded-xl font-semibold hover:bg-cyan-400 hover:text-slate-900 transition-all duration-300 transform hover:scale-105"
+                className={`px-8 py-4 border-2 rounded-xl font-semibold transition-all duration-300 transform hover:scale-105 ${
+                  isDark 
+                    ? 'border-cyan-400 text-cyan-400 hover:bg-cyan-400 hover:text-slate-900'
+                    : 'border-cyan-600 text-cyan-600 hover:bg-cyan-600 hover:text-slate-900'
+                }`}
               >
                 Get In Touch
               </button>
@@ -415,26 +461,38 @@ export default function HeroSection() {
                 href={personalInfo.contact.social.github}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="p-4 bg-slate-800/70 backdrop-blur-sm rounded-xl hover:bg-slate-700 hover:scale-110 transition-all duration-300 border border-slate-700 hover:border-cyan-400/50"
+                className={`p-4 backdrop-blur-sm rounded-xl hover:scale-110 transition-all duration-300 ${
+                  isDark 
+                    ? 'bg-slate-800/70 hover:bg-slate-700 border border-slate-700 hover:border-cyan-400/50' 
+                    : 'bg-slate-100/80 hover:bg-slate-200/90 border border-slate-200 hover:border-cyan-500/60'
+                }`}
               >
-                <AnimatedGitHub size={24} color="#06b6d4" />
+                <AnimatedGitHub size={24} color={isDark ? "#06b6d4" : "#0891b2"} />
               </a>
               <a
                 href={personalInfo.contact.social.linkedin}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="p-4 bg-slate-800/70 backdrop-blur-sm rounded-xl hover:bg-slate-700 hover:scale-110 transition-all duration-300 border border-slate-700 hover:border-cyan-400/50"
+                className={`p-4 backdrop-blur-sm rounded-xl hover:scale-110 transition-all duration-300 ${
+                  isDark 
+                    ? 'bg-slate-800/70 hover:bg-slate-700 border border-slate-700 hover:border-cyan-400/50' 
+                    : 'bg-slate-100/80 hover:bg-slate-200/90 border border-slate-200 hover:border-cyan-500/60'
+                }`}
               >
-                <AnimatedLinkedIn size={24} color="#06b6d4" />
+                <AnimatedLinkedIn size={24} color={isDark ? "#06b6d4" : "#0891b2"} />
               </a>
               {personalInfo.contact.social.twitter && (
                 <a
                   href={personalInfo.contact.social.twitter}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="p-4 bg-slate-800/70 backdrop-blur-sm rounded-xl hover:bg-slate-700 hover:scale-110 transition-all duration-300 border border-slate-700 hover:border-cyan-400/50"
+                  className={`p-4 backdrop-blur-sm rounded-xl hover:scale-110 transition-all duration-300 ${
+                    isDark 
+                      ? 'bg-slate-800/70 hover:bg-slate-700 border border-slate-700 hover:border-cyan-400/50' 
+                      : 'bg-slate-100/80 hover:bg-slate-200/90 border border-slate-200 hover:border-cyan-500/60'
+                  }`}
                 >
-                  <AnimatedTwitter size={24} color="#06b6d4" />
+                  <AnimatedTwitter size={24} color={isDark ? "#06b6d4" : "#0891b2"} />
                 </a>
               )}
               {personalInfo.contact.social.instagram && (
@@ -442,9 +500,13 @@ export default function HeroSection() {
                   href={personalInfo.contact.social.instagram}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="p-4 bg-slate-800/70 backdrop-blur-sm rounded-xl hover:bg-slate-700 hover:scale-110 transition-all duration-300 border border-slate-700 hover:border-cyan-400/50"
+                  className={`p-4 backdrop-blur-sm rounded-xl hover:scale-110 transition-all duration-300 ${
+                    isDark 
+                      ? 'bg-slate-800/70 hover:bg-slate-700 border border-slate-700 hover:border-cyan-400/50' 
+                      : 'bg-slate-100/80 hover:bg-slate-200/90 border border-slate-200 hover:border-cyan-500/60'
+                  }`}
                 >
-                  <AnimatedInstagram size={24} color="#06b6d4" />
+                  <AnimatedInstagram size={24} color={isDark ? "#06b6d4" : "#0891b2"} />
                 </a>
               )}
               {personalInfo.contact.social.leetcode && (
@@ -452,16 +514,24 @@ export default function HeroSection() {
                   href={personalInfo.contact.social.leetcode}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="p-4 bg-slate-800/70 backdrop-blur-sm rounded-xl hover:bg-slate-700 hover:scale-110 transition-all duration-300 border border-slate-700 hover:border-cyan-400/50"
+                  className={`p-4 backdrop-blur-sm rounded-xl hover:scale-110 transition-all duration-300 ${
+                    isDark 
+                      ? 'bg-slate-800/70 hover:bg-slate-700 border border-slate-700 hover:border-cyan-400/50' 
+                      : 'bg-slate-100/80 hover:bg-slate-200/90 border border-slate-200 hover:border-cyan-500/60'
+                  }`}
                 >
-                  <AnimatedCode size={24} color="#06b6d4" />
+                  <AnimatedCode size={24} color={isDark ? "#06b6d4" : "#0891b2"}  />
                 </a>
               )}
               <a
                 href={`mailto:${personalInfo.contact.email}`}
-                className="p-4 bg-slate-800/70 backdrop-blur-sm rounded-xl hover:bg-slate-700 hover:scale-110 transition-all duration-300 border border-slate-700 hover:border-cyan-400/50"
+                className={`p-4 backdrop-blur-sm rounded-xl hover:scale-110 transition-all duration-300 ${
+                  isDark 
+                    ? 'bg-slate-800/70 hover:bg-slate-700 border border-slate-700 hover:border-cyan-400/50' 
+                    : 'bg-slate-100/80 hover:bg-slate-200/90 border border-slate-200 hover:border-cyan-500/60'
+                }`}
               >
-                <AnimatedMail size={24} color="#06b6d4" />
+                <AnimatedMail size={24} color={isDark ? "#06b6d4" : "#0891b2"} />
               </a>
             </motion.div>
           </motion.div>
