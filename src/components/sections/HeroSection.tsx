@@ -1,6 +1,7 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { MapPin } from 'lucide-react';
 import TerminalText from '@/components/animations/TerminalText';
 import FloatingElements from '@/components/3d/FloatingElements';
@@ -25,10 +26,51 @@ const terminalLines = [
 ];
 
 export default function HeroSection() {
+  const [isExploding, setIsExploding] = useState(false);
+  const [showWarning, setShowWarning] = useState(false);
+  const [explosionKey, setExplosionKey] = useState(0);
+  const [showNameReform, setShowNameReform] = useState(false);
+
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId);
     element?.scrollIntoView({ behavior: 'smooth' });
   };
+
+  const handleNameClick = () => {
+    if (isExploding) return; // Prevent multiple clicks during animation
+    
+    setIsExploding(true);
+    setShowNameReform(false);
+    setExplosionKey(prev => prev + 1); // Force re-render with new random values
+    
+    // After 8 seconds, start name reformation
+    setTimeout(() => {
+      setShowNameReform(true);
+    }, 8000);
+    
+    // Reset explosion state after 12 seconds (when reformation completes)
+    setTimeout(() => {
+      setIsExploding(false);
+      setShowNameReform(false);
+    }, 8000);
+  };
+
+  const handleNameHover = () => {
+    if (!isExploding) {
+      setShowWarning(true);
+    }
+  };
+
+  const handleNameLeave = () => {
+    setShowWarning(false);
+  };
+
+  // Split name into individual letters for explosion animation
+  const nameLetters = personalInfo.name.split('').map((letter, index) => ({
+    letter: letter === ' ' ? '\u00A0' : letter, // Non-breaking space for spaces
+    index,
+    originalIndex: index
+  }));
 
   return (
     <section className="min-h-screen flex items-center justify-center relative overflow-hidden">
@@ -134,15 +176,158 @@ export default function HeroSection() {
               </div>
             </motion.div>
 
-            {/* Name and Title */}
-            <motion.h1
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4, duration: 0.8 }}
-              className="text-4xl lg:text-6xl xl:text-7xl font-bold bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent mb-4"
-            >
-              {personalInfo.name}
-            </motion.h1>
+            {/* Name and Title with Explosion Animation */}
+            <div className="relative mb-4">
+              {/* Warning tooltip - smaller size, positioned lower and right */}
+              <AnimatePresence>
+                {showWarning && !isExploding && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -8, scale: 0.7 }}
+                    animate={{ opacity: 1, y: -12, scale: 1 }}
+                    exit={{ opacity: 0, y: -8, scale: 0.7 }}
+                    className="absolute -top-8 left-3/4 transform -translate-x-1/4 z-20"
+                  >
+                    <div className="bg-slate-900/90 backdrop-blur-md rounded-md px-2 py-1 border border-red-400/30 whitespace-nowrap">
+                      <div className="flex items-center space-x-1">
+                        <span className="text-red-400 text-xs font-medium">⚠️ Don't click me!</span>
+                      </div>
+                      {/* Tooltip arrow */}
+                      <div className="absolute top-full left-1/4 transform -translate-x-1/2">
+                        <div className="w-0 h-0 border-l-2 border-r-2 border-t-2 border-transparent border-t-red-400/30"></div>
+                      </div>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+
+              <motion.h1
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.4, duration: 0.8 }}
+                className="text-4xl lg:text-6xl xl:text-7xl font-bold mb-4 cursor-pointer select-none relative"
+                onClick={handleNameClick}
+                onMouseEnter={handleNameHover}
+                onMouseLeave={handleNameLeave}
+              >
+                {!isExploding ? (
+                  // Normal state
+                  <span className="bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent">
+                    {personalInfo.name}
+                  </span>
+                ) : showNameReform ? (
+                  // Name reformation state - smooth fade in with longer duration
+                  <motion.span
+                    className="bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent"
+                    initial={{ opacity: 0, scale: 0.5, y: 30 }}
+                    animate={{ opacity: 1, scale: 1, y: 0 }}
+                    transition={{ 
+                      duration: 4, // Much longer reformation duration
+                      ease: [0.25, 0.46, 0.45, 0.94],
+                      type: "spring",
+                      stiffness: 60, // Slower spring for more gradual effect
+                      damping: 15
+                    }}
+                  >
+                    {personalInfo.name}
+                  </motion.span>
+                ) : (
+                  // Explosion state - natural physics-based letter scattering
+                  <div className="relative inline-block">
+                    <span className="invisible">{personalInfo.name}</span>
+                    {nameLetters.map((letterObj, index) => {
+                      // Natural explosion physics - each letter gets unique trajectory
+                      // Use explosionKey to ensure new random values on each explosion
+                      const randomSeed = explosionKey + index;
+                      
+                      // Ensure minimum distance - letters must scatter far from center
+                      const explosionAngle = ((randomSeed * 37) % 100 / 100 - 0.5) * 2 * Math.PI;
+                      const minForce = 600; // Minimum force to ensure all letters go far
+                      const explosionForce = minForce + ((randomSeed * 71) % 100) * 8; // Force range: 600-1400px
+                      
+                      // Initial velocity components - ensure significant movement
+                      const baseVelocityX = Math.cos(explosionAngle) * explosionForce;
+                      const baseVelocityY = Math.sin(explosionAngle) * explosionForce;
+                      
+                      // Add extra distance bias to push letters farther from center
+                      const centerBias = 300; // Additional force away from center
+                      const initialVelocityX = baseVelocityX + (baseVelocityX > 0 ? centerBias : -centerBias);
+                      const initialVelocityY = baseVelocityY - (300 + ((randomSeed * 13) % 100) * 3); // Strong upward bias
+                      
+                      // Calculate natural trajectory with gravity
+                      const gravity = 700; // Strong gravity for dramatic fall
+                      const timeToApex = Math.abs(initialVelocityY) / gravity;
+                      
+                      // Calculate peak positions - guaranteed far distances
+                      const peakX = initialVelocityX * timeToApex * 0.85;
+                      const peakY = (initialVelocityY * timeToApex) - (0.5 * gravity * timeToApex * timeToApex);
+                      
+                      // Final positions - very far landing spots
+                      const landingX = peakX * 2.2 + ((randomSeed * 23) % 100 - 50) * 6; // Much farther spread
+                      const landingY = 400 + ((randomSeed * 41) % 100) * 6; // Much farther fall: 400-1000px
+                      
+                      // Rotation physics
+                      const rotationSpeed = ((randomSeed * 47) % 100 - 50) * 10;
+                      const totalRotation = rotationSpeed * 4; // More dramatic rotation
+                      
+                      // Calculate letter's original position within the name
+                      const letterWidth = 100 / nameLetters.length;
+                      const letterPosition = (index * letterWidth) - 50;
+
+                      return (
+                        <motion.span
+                          key={`${letterObj.letter}-${letterObj.index}-${explosionKey}`}
+                          className="absolute top-0 bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent font-bold"
+                          initial={{ 
+                            x: letterPosition,
+                            y: 0, 
+                            rotate: 0, 
+                            scale: 1,
+                            opacity: 1
+                          }}
+                          animate={{
+                            x: isExploding ? [
+                              letterPosition,                    // Start at original position
+                              letterPosition + peakX,          // Peak of trajectory
+                              letterPosition + landingX        // Landing position (stay there)
+                            ] : letterPosition,
+                            y: isExploding ? [
+                              0,           // Start position
+                              peakY,       // Peak height
+                              landingY     // Landing position (stay there)
+                            ] : 0,
+                            rotate: isExploding ? [
+                              0,
+                              totalRotation * 0.6,  // Most rotation during flight
+                              totalRotation         // Full rotation at landing (stay there)
+                            ] : 0,
+                            scale: isExploding ? [1, 1, 0.8] : 1, // Slightly shrink on landing
+                            opacity: isExploding ? [
+                              1,    // Visible at start
+                              1,    // Visible during flight
+                              0     // Disappear on landing
+                            ] : 1
+                          }}
+                          transition={{
+                            duration: isExploding ? 7 : 2, // 7 seconds for explosion + disappear
+                            ease: isExploding ? [0.25, 0.46, 0.45, 0.94] : "easeInOut",
+                            times: isExploding ? [0, 0.4, 1] : undefined // 40% flight, 60% fall + disappear
+                          }}
+                          style={{
+                            transformOrigin: 'center center',
+                            zIndex: 20 + index,
+                            left: '50%',
+                            transform: 'translateX(-50%)'
+                          }}
+                        >
+                          {letterObj.letter}
+                        </motion.span>
+                      );
+                    })}
+                  </div>
+                )}
+
+              </motion.h1>
+            </div>
 
             <motion.p
               initial={{ opacity: 0, y: 20 }}
