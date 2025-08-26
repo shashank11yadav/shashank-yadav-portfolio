@@ -237,7 +237,7 @@ export default function AboutSection() {
                   onMouseOver={(e) => handleTileMouseOver(e, 0)}
                   onMouseOut={(e) => handleTileMouseOut(e, 0)}
                 >
-                  <span className="circle-effect" ref={el => circleRefs.current[0] = el}></span>
+                  <span className="circle-effect" ref={el => { circleRefs.current[0] = el; }}></span>
                   <div className="tile-content">
                     <h4 className="font-semibold mb-1 text-base">
                       🚀 Full-Stack Development
@@ -253,7 +253,7 @@ export default function AboutSection() {
                   onMouseOver={(e) => handleTileMouseOver(e, 1)}
                   onMouseOut={(e) => handleTileMouseOut(e, 1)}
                 >
-                  <span className="circle-effect" ref={el => circleRefs.current[1] = el}></span>
+                  <span className="circle-effect" ref={el => { circleRefs.current[1] = el; }}></span>
                   <div className="tile-content">
                     <h4 className="font-semibold mb-1 text-base">
                       🤖 AI/ML Solutions
@@ -269,7 +269,7 @@ export default function AboutSection() {
                   onMouseOver={(e) => handleTileMouseOver(e, 2)}
                   onMouseOut={(e) => handleTileMouseOut(e, 2)}
                 >
-                  <span className="circle-effect" ref={el => circleRefs.current[2] = el}></span>
+                  <span className="circle-effect" ref={el => { circleRefs.current[2] = el; }}></span>
                   <div className="tile-content">
                     <h4 className="font-semibold mb-1 text-base">
                       ☁️ Cloud Architecture
@@ -285,7 +285,7 @@ export default function AboutSection() {
                   onMouseOver={(e) => handleTileMouseOver(e, 3)}
                   onMouseOut={(e) => handleTileMouseOut(e, 3)}
                 >
-                  <span className="circle-effect" ref={el => circleRefs.current[3] = el}></span>
+                  <span className="circle-effect" ref={el => { circleRefs.current[3] = el; }}></span>
                   <div className="tile-content">
                     <h4 className="font-semibold mb-1 text-base">
                       🎨 UI/UX Design

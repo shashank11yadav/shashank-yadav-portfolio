@@ -33,7 +33,7 @@ export function calculateAge(birthDate: string): number {
   return age;
 }
 
-export function debounce<T extends (...args: any[]) => void>(
+export function debounce<T extends (...args: unknown[]) => void>(
   func: T,
   delay: number
 ): (...args: Parameters<T>) => void {
@@ -45,7 +45,7 @@ export function debounce<T extends (...args: any[]) => void>(
   };
 }
 
-export function throttle<T extends (...args: any[]) => void>(
+export function throttle<T extends (...args: unknown[]) => void>(
   func: T,
   limit: number
 ): (...args: Parameters<T>) => void {

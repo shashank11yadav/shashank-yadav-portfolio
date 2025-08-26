@@ -469,12 +469,11 @@ export const AnimatedArrowDown = ({ size = 24, color = "currentColor", className
       viewBox="0 0 24 24"
       fill="none"
       className={className}
-      whileHover={{ scale: 1.1 }}
       animate={animate ? { y: [0, 5, 0] } : {}}
       transition={{
-        y: { repeat: Infinity, duration: 2, ease: "easeInOut" },
-        hover: { type: "spring", stiffness: 300, damping: 20 }
+        y: { repeat: Infinity, duration: 2, ease: "easeInOut" }
       }}
+      whileHover={{ scale: 1.1, transition: { type: "spring", stiffness: 300, damping: 20 } }}
     >
       <motion.path
         d="M7 13l5 5 5-5M7 6l5 5 5-5"
