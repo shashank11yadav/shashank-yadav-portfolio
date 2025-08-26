@@ -100,7 +100,7 @@ export const projects: Project[] = [
     longDescription: "A comprehensive sales training platform that revolutionizes how people learn sales skills. Built with the MERN stack, it features user authentication, personalized learning paths, interactive roleplay scenarios, and AI-driven feedback systems. The platform includes employer and learner workflows, facilitating career opportunities and connections through advanced skill assessments.",
     image: "/projects/pitch-perfect.jpg",
     technologies: ["Python", "MongoDB", "Express", "React", "Node.js", "AI", "Authentication"],
-    github: "https://github.com/shashank11yadav/pitch-perfect",
+    github: "https://amie-jobs-wat9.vercel.app/",
     featured: true,
     category: "web"
   },
