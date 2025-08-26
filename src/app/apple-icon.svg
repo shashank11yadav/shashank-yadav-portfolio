@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 180" fill="none">
+  <defs>
+    <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#06b6d4;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#3b82f6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#8b5cf6;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="accent" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#f59e0b;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#ef4444;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background with rounded corners for Apple icon -->
+  <rect x="0" y="0" width="180" height="180" rx="36" ry="36" fill="url(#gradient)"/>
+  
+  <!-- Proper larger 'S' for Apple icon -->
+  <path d="M115 65 C115 55, 105 50, 95 50 L75 50 C65 50, 55 60, 55 75 C55 85, 65 90, 75 90 L105 90 C115 90, 125 100, 125 115 C125 125, 115 130, 105 130 L75 130 C65 130, 55 120, 55 120" 
+        fill="none" 
+        stroke="white" 
+        stroke-width="12" 
+        stroke-linecap="round" 
+        stroke-linejoin="round"/>
+        
+  <!-- Accent elements -->
+  <circle cx="140" cy="45" r="12" fill="url(#accent)"/>
+  
+  <!-- Geometric accents -->
+  <rect x="35" y="35" width="8" height="8" fill="rgba(255,255,255,0.3)" rx="2"/>
+  <rect x="137" y="137" width="8" height="8" fill="rgba(255,255,255,0.3)" rx="2"/>
+  
+  <!-- Tech-inspired dots -->
+  <circle cx="150" cy="135" r="3" fill="rgba(255,255,255,0.6)"/>
+  <circle cx="30" cy="150" r="3" fill="rgba(255,255,255,0.6)"/>
+</svg>

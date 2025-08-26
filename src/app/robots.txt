@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /_next/
+Disallow: /out/
+
+Sitemap: https://shashank11yadav.github.io/shashank-yadav-portfolio/sitemap.xml
+
+# Allow search engines to crawl and index the portfolio
+Crawl-delay: 1

@@ -1,0 +1,26 @@
+{
+  "name": "Shashank Yadav - Software Development Engineer",
+  "short_name": "Shashank Portfolio",
+  "description": "Modern interactive portfolio showcasing AI-driven solutions, full-stack development expertise, and innovative projects.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0f172a",
+  "theme_color": "#06b6d4",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/apple-icon.svg", 
+      "sizes": "180x180",
+      "type": "image/svg+xml"
+    }
+  ],
+  "categories": ["portfolio", "developer", "technology"],
+  "lang": "en",
+  "dir": "ltr"
+}

@@ -11,7 +11,7 @@
 
 Welcome to my interactive portfolio! This project demonstrates my expertise in modern full-stack development, featuring advanced animations, 3D elements, and responsive design. Built as a showcase of both technical skills and creative vision.
 
-**🔗 Live Demo:** [shashankyadav.dev](https://shashankyadav.dev)
+**🔗 Live Demo:** [shashank11yadav.github.io/shashank-yadav-portfolio](https://shashank11yadav.github.io/shashank-yadav-portfolio/)
 
 ## ✨ Key Features
 
@@ -255,7 +255,7 @@ This project is open source and available under the [MIT License](LICENSE).
 
 *Transforming ideas into digital experiences*
 
-[![Portfolio](https://img.shields.io/badge/Portfolio-Visit-brightgreen?style=for-the-badge)](https://shashankyadav.dev)
+[![Portfolio](https://img.shields.io/badge/Portfolio-Visit-brightgreen?style=for-the-badge)](https://shashank11yadav.github.io/shashank-yadav-portfolio/)
 [![GitHub](https://img.shields.io/badge/GitHub-Follow-black?style=for-the-badge&logo=github)](https://github.com/shashank11yadav)
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-Connect-blue?style=for-the-badge&logo=linkedin)](https://www.linkedin.com/in/shashank-yadav-cs)
 
