@@ -76,15 +76,6 @@ export default function HeroSection() {
 
   return (
     <section className="min-h-screen flex items-center justify-center relative overflow-hidden">
-      {/* Background gradient - responsive to theme */}
-      <div 
-        className="absolute inset-0 transition-all duration-700"
-        style={{
-          background: isDark 
-            ? 'linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #0f172a 100%)'
-            : 'linear-gradient(135deg, #f8fafc 0%, #ddd6fe 50%, #e0e7ff 100%)'
-        }}
-      ></div>
       
       {/* 3D Floating Elements Background */}
       <div className="absolute inset-0 z-0">
@@ -101,7 +92,7 @@ export default function HeroSection() {
             initial={{ opacity: 0, x: -50 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8 }}
-            className="flex flex-col items-center lg:items-start text-center lg:text-left pt-8 sm:pt-0"
+            className="flex flex-col items-center lg:items-start text-center lg:text-left pt-20 sm:pt-12 lg:pt-0"
           >
             {/* Profile Image with Animated Outline */}
             <motion.div
@@ -502,13 +493,17 @@ export default function HeroSection() {
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 1, duration: 0.8 }}
             >
-              <div className="bg-slate-800/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700">
+              <div className={`backdrop-blur-sm rounded-xl p-6 border transition-colors duration-300 ${
+                isDark 
+                  ? 'bg-slate-800/50 border-slate-700'
+                  : 'bg-slate-700/50 border-slate-300'
+              }`}>
                 <div className="flex items-center gap-2 mb-4">
                   <div className="w-3 h-3 bg-red-500 rounded-full"></div>
                   <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
                   <div className="w-3 h-3 bg-green-500 rounded-full"></div>
                   <span className={`ml-2 transition-colors duration-300 ${
-                    isDark ? 'text-gray-400' : 'text-gray-100'
+                    isDark ? 'text-gray-400' : 'text-gray-700'
                   }`}>terminal</span>
                 </div>
                 <TerminalText lines={terminalLines} speed={80} />
@@ -532,7 +527,7 @@ export default function HeroSection() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 1.4, duration: 0.8 }}
-              className="flex flex-col sm:flex-row gap-4"
+              className="flex flex-col sm:flex-row gap-4 justify-center sm:justify-start"
             >
               <button
                 onClick={() => scrollToSection('projects')}

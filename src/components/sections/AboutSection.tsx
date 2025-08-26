@@ -61,14 +61,7 @@ export default function AboutSection() {
   return (
     <section 
       id="about" 
-      className={`py-20 px-6 transition-all duration-700 ${
-        isDark ? 'relative' : ''
-      }`}
-      style={{
-        background: !isDark 
-          ? 'linear-gradient(135deg, #f8fafc 0%, #ddd6fe 50%, #e0e7ff 100%)'
-          : 'transparent'
-      }}
+      className="py-20 px-6 relative"
     >
       <div className="max-w-6xl mx-auto">
         <motion.div

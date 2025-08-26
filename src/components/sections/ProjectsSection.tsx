@@ -104,6 +104,7 @@ function ProjectCard({ project, index, onCardClick }: { project: Project; index:
                     initial={{ y: 20, opacity: 0 }}
                     animate={{ y: 0, opacity: 1 }}
                     transition={{ delay: 0.1 }}
+                    onClick={(e) => e.stopPropagation()}
                     className={`relative z-10 flex items-center gap-2 px-6 py-3 rounded-full text-white transition-all duration-300 transform hover:scale-110 shadow-lg font-semibold ${
                       isDark 
                         ? 'bg-gradient-to-r from-cyan-500 to-purple-500 hover:from-cyan-400 hover:to-purple-400 hover:shadow-cyan-500/25'
@@ -217,6 +218,7 @@ function ProjectCard({ project, index, onCardClick }: { project: Project; index:
                 href={project.github}
                 target="_blank"
                 rel="noopener noreferrer"
+                onClick={(e) => e.stopPropagation()}
                 className={`w-full flex items-center justify-center gap-2 px-4 py-2 rounded-lg font-semibold text-white hover:scale-105 transition-all duration-300 text-sm transform hover:shadow-lg ${
                   isDark 
                     ? 'bg-gradient-to-r from-cyan-500 to-purple-500 hover:from-cyan-400 hover:to-purple-400 hover:shadow-cyan-500/25'
@@ -260,14 +262,7 @@ export default function ProjectsSection() {
   return (
     <section 
       id="projects" 
-      className={`py-20 px-6 transition-all duration-700 ${
-        isDark ? 'relative bg-slate-900/30' : ''
-      }`}
-      style={{
-        background: !isDark 
-          ? 'linear-gradient(135deg, #f8fafc 0%, #ddd6fe 50%, #e0e7ff 100%)'
-          : undefined
-      }}
+      className="py-20 px-6 relative"
     >
       <div className="max-w-7xl mx-auto">
         <motion.div

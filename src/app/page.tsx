@@ -20,9 +20,25 @@ export default function Home() {
   const { isDark } = useTheme();
   
   return (
-    <div className={`min-h-screen overflow-x-hidden transition-colors duration-300 ${
-      isDark ? 'bg-slate-900 text-white' : 'bg-white text-gray-900'
-    }`}>
+    <div className="min-h-screen overflow-x-hidden transition-colors duration-300 bg-gradient-container">
+      <style jsx>{`
+        .bg-gradient-container {
+          background: ${isDark 
+            ? 'linear-gradient(135deg, #0f172a 0%, #1e1b4b 25%, #1e293b 50%, #0f172a 75%, #312e81 100%)'
+            : 'linear-gradient(135deg, #f8fafc 0%, #ddd6fe 25%, #e0e7ff 50%, #cffafe 75%, #f0f9ff 100%)'
+          };
+          background-attachment: fixed;
+          background-size: 400% 400%;
+          animation: gradientShift 20s ease infinite;
+          color: ${isDark ? '#f8fafc' : '#1e293b'};
+        }
+        
+        @keyframes gradientShift {
+          0% { background-position: 0% 50%; }
+          50% { background-position: 100% 50%; }
+          100% { background-position: 0% 50%; }
+        }
+      `}</style>
       {/* 3D Background */}
       <ParticleBackground />
       
@@ -65,13 +81,9 @@ export default function Home() {
       {/* Footer */}
       <footer 
         className={`py-8 px-6 text-center transition-all duration-700 ${
-          isDark ? 'text-gray-400 bg-slate-900/30' : 'text-gray-800'
+          isDark ? 'text-gray-400' : 'text-gray-800'
         }`}
-        style={{
-          background: !isDark 
-            ? 'linear-gradient(135deg, #f8fafc 0%, #ddd6fe 50%, #e0e7ff 100%)'
-            : undefined
-        }}
+        style={{ background: 'transparent' }}
       >
         <div className="max-w-6xl mx-auto text-center">
           <p className={`mb-4 transition-colors duration-300 ${

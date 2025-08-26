@@ -94,7 +94,7 @@ export default function TerminalText({
           }`}
         >
           <span className={`transition-colors duration-300 ${
-            isDark ? 'text-gray-500' : 'text-gray-200'
+            isDark ? 'text-gray-500' : 'text-gray-100'
           }`}>$ </span>
           Welcome to my portfolio! 🚀
           {showCursor && <span className="animate-pulse">|</span>}

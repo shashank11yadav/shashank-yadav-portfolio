@@ -137,14 +137,7 @@ export default function SkillsSection() {
   return (
     <section 
       id="skills" 
-      className={`py-20 px-6 transition-all duration-700 ${
-        isDark ? 'relative bg-slate-900/50' : ''
-      }`}
-      style={{
-        background: !isDark 
-          ? 'linear-gradient(135deg, #f8fafc 0%, #ddd6fe 50%, #e0e7ff 100%)'
-          : undefined
-      }}
+      className="py-20 px-6 relative"
     >
       <div className="max-w-6xl mx-auto">
         <motion.div
@@ -215,7 +208,7 @@ export default function SkillsSection() {
               animate={inView ? { opacity: 1, x: 0 } : { opacity: 0, x: 20 }}
               transition={{ delay: 0.2, duration: 0.8 }}
             >
-              <div className={`backdrop-blur-sm rounded-xl p-2 border flex transition-colors duration-300 ${
+              <div className={`backdrop-blur-sm rounded-xl p-2 border flex transition-colors duration-300 w-fit ${
                 isDark 
                   ? 'bg-slate-800/50 border-slate-600' 
                   : 'bg-slate-100/60 border-slate-300'

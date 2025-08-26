@@ -446,14 +446,7 @@ export default function ExperienceSection() {
     <section 
       ref={sectionRef}
       id="experience" 
-      className={`relative py-20 px-6 overflow-hidden transition-all duration-700 ${
-        isDark ? 'bg-slate-900/40' : ''
-      }`}
-      style={{
-        background: !isDark 
-          ? 'linear-gradient(135deg, #f8fafc 0%, #ddd6fe 50%, #e0e7ff 100%)'
-          : undefined
-      }}
+      className="relative py-20 px-6 overflow-hidden"
     >
       {/* Subtle background elements */}
       <motion.div 

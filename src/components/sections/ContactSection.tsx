@@ -76,14 +76,7 @@ export default function ContactSection() {
   return (
     <section 
       id="contact" 
-      className={`py-20 px-6 transition-all duration-700 ${
-        isDark ? 'relative bg-slate-900/30' : ''
-      }`}
-      style={{
-        background: !isDark 
-          ? 'linear-gradient(135deg, #f8fafc 0%, #ddd6fe 50%, #e0e7ff 100%)'
-          : undefined
-      }}
+      className="py-20 px-6 relative"
     >
       <div className="max-w-6xl mx-auto">
         <motion.div
@@ -381,13 +374,13 @@ export default function ContactSection() {
                 transition={{ delay: 0.6, duration: 0.8 }}
                 className="w-full"
               >
-            <div className={`backdrop-blur-xl rounded-3xl p-8 border shadow-2xl transition-colors duration-300 ${
+            <div className={`backdrop-blur-xl rounded-3xl p-8 border transition-colors duration-300 ${
               isDark 
-                ? 'bg-gradient-to-br from-slate-800/60 via-slate-800/40 to-slate-900/60 border-slate-600/50'
-                : 'bg-gradient-to-br from-slate-100/80 via-slate-50/60 to-slate-200/80 border-slate-300/50'
+                ? 'bg-slate-800/40 border-slate-700/30'
+                : 'bg-white/40 border-slate-300/20'
             }`}>
               <div className="text-center mb-8">
-                <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-cyan-500/20 to-purple-500/20 rounded-full border border-cyan-400/30 mb-4">
+                <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-cyan-500/20 to-purple-500/20 rounded-full mb-4">
                   <MessageSquare className={`transition-colors duration-300 ${
                     isDark ? 'text-cyan-400' : 'text-cyan-600'
                   }`} size={28} />
@@ -424,8 +417,8 @@ export default function ContactSection() {
                       required
                       className={`w-full px-4 py-3 border rounded-xl focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/20 transition-all duration-300 ${
                         isDark 
-                          ? 'bg-slate-700/70 border-slate-600 text-white placeholder-gray-400'
-                          : 'bg-white/80 border-slate-300 text-gray-900 placeholder-gray-500'
+                          ? 'bg-slate-700/30 border-slate-600/30 text-white placeholder-gray-400'
+                          : 'bg-white/30 border-slate-300/30 text-gray-900 placeholder-gray-500'
                       }`}
                       placeholder="Your name"
                     />
@@ -445,8 +438,8 @@ export default function ContactSection() {
                       required
                       className={`w-full px-4 py-3 border rounded-xl focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/20 transition-all duration-300 ${
                         isDark 
-                          ? 'bg-slate-700/70 border-slate-600 text-white placeholder-gray-400'
-                          : 'bg-white/80 border-slate-300 text-gray-900 placeholder-gray-500'
+                          ? 'bg-slate-700/30 border-slate-600/30 text-white placeholder-gray-400'
+                          : 'bg-white/30 border-slate-300/30 text-gray-900 placeholder-gray-500'
                       }`}
                       placeholder="your.email@example.com"
                     />
@@ -468,8 +461,8 @@ export default function ContactSection() {
                     required
                     className={`w-full px-4 py-3 border rounded-xl focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/20 transition-all duration-300 ${
                       isDark 
-                        ? 'bg-slate-700/70 border-slate-600 text-white placeholder-gray-400'
-                        : 'bg-white/80 border-slate-300 text-gray-900 placeholder-gray-500'
+                        ? 'bg-slate-700/30 border-slate-600/30 text-white placeholder-gray-400'
+                        : 'bg-white/30 border-slate-300/30 text-gray-900 placeholder-gray-500'
                     }`}
                     placeholder="Project inquiry, collaboration, etc."
                   />
@@ -490,8 +483,8 @@ export default function ContactSection() {
                     rows={6}
                     className={`w-full px-4 py-3 border rounded-xl focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/20 transition-all duration-300 resize-none ${
                       isDark 
-                        ? 'bg-slate-700/70 border-slate-600 text-white placeholder-gray-400'
-                        : 'bg-white/80 border-slate-300 text-gray-900 placeholder-gray-500'
+                        ? 'bg-slate-700/30 border-slate-600/30 text-white placeholder-gray-400'
+                        : 'bg-white/30 border-slate-300/30 text-gray-900 placeholder-gray-500'
                     }`}
                     placeholder="Tell me about your project..."
                   />
