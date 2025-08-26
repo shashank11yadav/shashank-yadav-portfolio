@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
-import { ChevronDown, ChevronUp } from 'lucide-react';
+import { ChevronDown, ChevronUp, Layers, Award, Target, TrendingUp } from 'lucide-react';
 import { skills } from '@/data/portfolio';
 import { Skill } from '@/types';
 import SkillSphere from '@/components/3d/SkillSphere';
@@ -114,6 +114,7 @@ export default function SkillsSection() {
   const [isExpanded, setIsExpanded] = useState(false);
   const [viewMode, setViewMode] = useState<'grid' | 'sphere'>('grid');
   const [randomizedSkills, setRandomizedSkills] = useState<Skill[]>([]);
+  const [hoveredCard, setHoveredCard] = useState<number | null>(null);
   const [ref, inView] = useInView({
     threshold: 0.2,
     triggerOnce: true,
@@ -160,7 +161,46 @@ export default function SkillsSection() {
                   ? 'bg-gradient-to-r from-cyan-400 to-purple-500'
                   : 'bg-gradient-to-r from-cyan-600 to-purple-600'
               }`}>
-                Skills & Technologies
+                Skills & <span className="hover-effect-word">Technologies</span>
+                <style jsx>{`
+                  .hover-effect-word {
+                    background-image: linear-gradient(
+                      to right,
+                      ${isDark ? '#06b6d4' : '#0891b2'},
+                      ${isDark ? '#06b6d4' : '#0891b2'} 50%,
+                      ${isDark ? '#8b5cf6' : '#7c3aed'} 50%
+                    );
+                    background-size: 200% 100%;
+                    background-position: -100%;
+                    display: inline-block;
+                    padding: 5px 0;
+                    position: relative;
+                    -webkit-background-clip: text;
+                    -webkit-text-fill-color: transparent;
+                    transition: all 0.3s ease-in-out;
+                    cursor: pointer;
+                  }
+
+                  .hover-effect-word:before {
+                    content: '';
+                    background: ${isDark ? '#06b6d4' : '#0891b2'};
+                    display: block;
+                    position: absolute;
+                    bottom: -3px;
+                    left: 0;
+                    width: 0;
+                    height: 3px;
+                    transition: all 0.3s ease-in-out;
+                  }
+
+                  .hover-effect-word:hover {
+                    background-position: 0;
+                  }
+
+                  .hover-effect-word:hover::before {
+                    width: 100%;
+                  }
+                `}</style>
               </h2>
               <p className={`text-lg max-w-2xl transition-colors duration-300 ${
                 isDark ? 'text-gray-300' : 'text-gray-600'
@@ -189,7 +229,7 @@ export default function SkillsSection() {
                         : 'bg-gradient-to-r from-cyan-600 to-purple-600 text-white shadow-lg'
                       : isDark 
                         ? 'text-gray-300 hover:text-white hover:bg-slate-700/50'
-                        : 'text-gray-600 hover:text-gray-800 hover:bg-slate-200/50'
+                        : 'text-gray-600 hover:text-gray-800 hover:bg-slate-300/70 cursor-pointer'
                   }`}
                 >
                   <span className="text-base">📊</span>
@@ -204,7 +244,7 @@ export default function SkillsSection() {
                         : 'bg-gradient-to-r from-cyan-600 to-purple-600 text-white shadow-lg'
                       : isDark 
                         ? 'text-gray-300 hover:text-white hover:bg-slate-700/50'
-                        : 'text-gray-600 hover:text-gray-800 hover:bg-slate-200/50'
+                        : 'text-gray-600 hover:text-gray-800 hover:bg-slate-300/70 cursor-pointer'
                   }`}
                 >
                   <span className="text-base">🌐</span>
@@ -328,59 +368,73 @@ export default function SkillsSection() {
           </h3>
 
           {/* Skill Summary Stats */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
-            <motion.div
-              whileHover={{ scale: 1.05 }}
-              transition={{ type: "spring", stiffness: 300 }}
-            >
-              <div className={`text-3xl font-bold mb-2 transition-colors duration-300 ${
-                isDark ? 'text-cyan-400' : 'text-cyan-600'
-              }`}>
-                {skills.filter(s => s.level >= 90).length}
-              </div>
-              <div className={`text-sm transition-colors duration-300 ${
-                isDark ? 'text-gray-400' : 'text-gray-600'
-              }`}>Expert (90%+)</div>
-            </motion.div>
-            <motion.div
-              whileHover={{ scale: 1.05 }}
-              transition={{ type: "spring", stiffness: 300 }}
-            >
-              <div className={`text-3xl font-bold mb-2 transition-colors duration-300 ${
-                isDark ? 'text-purple-400' : 'text-purple-500'
-              }`}>
-                {skills.filter(s => s.level >= 80 && s.level < 90).length}
-              </div>
-              <div className={`text-sm transition-colors duration-300 ${
-                isDark ? 'text-gray-400' : 'text-gray-600'
-              }`}>Advanced (80%+)</div>
-            </motion.div>
-            <motion.div
-              whileHover={{ scale: 1.05 }}
-              transition={{ type: "spring", stiffness: 300 }}
-            >
-              <div className={`text-3xl font-bold mb-2 transition-colors duration-300 ${
-                isDark ? 'text-green-400' : 'text-green-600'
-              }`}>
-                {[...new Set(skills.map(s => s.category))].length}
-              </div>
-              <div className={`text-sm transition-colors duration-300 ${
-                isDark ? 'text-gray-400' : 'text-gray-600'
-              }`}>Categories</div>
-            </motion.div>
-            <motion.div
-              whileHover={{ scale: 1.05 }}
-              transition={{ type: "spring", stiffness: 300 }}
-            >
-              <div className={`text-3xl font-bold mb-2 transition-colors duration-300 ${
-                isDark ? 'text-yellow-400' : 'text-yellow-600'
-              }`}>
-                {skills.length}
-              </div>
-              <div className={`text-sm transition-colors duration-300 ${
-                isDark ? 'text-gray-400' : 'text-gray-600'
-              }`}>Total Skills</div>
-            </motion.div>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto">
+            {[
+              { value: skills.filter(s => s.level >= 90).length, label: 'Expert (90%+)', icon: Award, color: 'cyan', bgLight: 'bg-cyan-50', bgDark: 'bg-cyan-500/10', borderLight: 'border-cyan-200', borderDark: 'border-cyan-400/30', textLight: 'text-cyan-700', textDark: 'text-cyan-400' },
+              { value: skills.filter(s => s.level >= 80 && s.level < 90).length, label: 'Advanced (80%+)', icon: TrendingUp, color: 'purple', bgLight: 'bg-purple-50', bgDark: 'bg-purple-500/10', borderLight: 'border-purple-200', borderDark: 'border-purple-400/30', textLight: 'text-purple-700', textDark: 'text-purple-400' },
+              { value: [...new Set(skills.map(s => s.category))].length, label: 'Categories', icon: Layers, color: 'green', bgLight: 'bg-emerald-50', bgDark: 'bg-emerald-500/10', borderLight: 'border-emerald-200', borderDark: 'border-emerald-400/30', textLight: 'text-emerald-700', textDark: 'text-emerald-400' },
+              { value: skills.length, label: 'Total Skills', icon: Target, color: 'yellow', bgLight: 'bg-amber-50', bgDark: 'bg-amber-500/10', borderLight: 'border-amber-200', borderDark: 'border-amber-400/30', textLight: 'text-amber-700', textDark: 'text-amber-400' }
+            ].map((stat, index) => {
+              const isCurrentlyHovered = hoveredCard === index;
+              const shouldBlur = hoveredCard !== null && hoveredCard !== index;
+
+              return (
+                <motion.div 
+                  key={stat.label}
+                  className={`text-center cursor-pointer p-4 relative border-2 ${
+                    isDark 
+                      ? 'bg-slate-800/80 border-slate-700/50' 
+                      : 'bg-gray-100 border-slate-300/50'
+                  }`}
+                  style={{
+                    borderRadius: '0.5rem',
+                    transition: 'all 150ms ease-in-out',
+                    transform: isCurrentlyHovered ? 'translateY(-4px)' : shouldBlur ? 'scale(0.95)' : 'none',
+                    filter: shouldBlur ? 'blur(4px)' : 'none',
+                    opacity: shouldBlur ? 0.7 : 1,
+                    boxShadow: isCurrentlyHovered 
+                      ? isDark 
+                        ? '0 10px 25px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -2px rgba(0, 0, 0, 0.3)' 
+                        : '0 10px 25px -3px rgba(0, 0, 0, 0.2), 0 4px 6px -2px rgba(0, 0, 0, 0.1)'
+                      : isDark 
+                        ? '0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2)' 
+                        : '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)'
+                  }}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ delay: index * 0.1, duration: 0.4 }}
+                  onMouseEnter={() => setHoveredCard(index)}
+                  onMouseLeave={() => setHoveredCard(null)}
+                >
+                  {/* Icon container */}
+                  <div
+                    className={`inline-flex items-center justify-center w-10 h-10 rounded-xl mb-3 transition-all duration-150 border-2 ${
+                      isDark 
+                        ? `${stat.bgDark} ${stat.borderDark}`
+                        : `${stat.bgLight} ${stat.borderLight}`
+                    }`}
+                  >
+                    <stat.icon className={`transition-all duration-150 ${
+                      isDark ? stat.textDark : stat.textLight
+                    }`} size={18} />
+                  </div>
+                  
+                  {/* Value */}
+                  <div className={`text-xl font-bold mb-1 transition-colors duration-150 ${
+                    isDark ? stat.textDark : stat.textLight
+                  }`}>
+                    {stat.value}
+                  </div>
+                  
+                  {/* Label */}
+                  <div className={`text-sm transition-colors duration-150 ${
+                    isDark ? 'text-gray-400' : 'text-gray-700'
+                  }`}>
+                    {stat.label}
+                  </div>
+                </motion.div>
+              );
+            })}
           </div>
         </motion.div>
       </div>

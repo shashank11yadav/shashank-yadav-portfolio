@@ -328,7 +328,7 @@ const COMMANDS = (isDark: boolean) => ({
       const totalSkills = skills.length;
       const expertSkills = skills.filter(s => s.level >= 90).length;
       const advancedSkills = skills.filter(s => s.level >= 80 && s.level < 90).length;
-      const totalYears = new Date().getFullYear() - 2022; // Adjust based on your start year
+      const totalYears = new Date().getFullYear() - 2023; // Adjust based on your start year
       const categories = [...new Set(skills.map(s => s.category))].length;
 
       return (

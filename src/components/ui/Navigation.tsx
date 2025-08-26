@@ -87,26 +87,113 @@ export default function Navigation() {
             </motion.div>
 
             {/* Desktop Menu */}
-            <div className="hidden md:flex items-center space-x-8">
+            <div className="hidden md:flex items-center space-x-2">
+              <style jsx>{`
+                .nav-link {
+                  position: relative;
+                  display: block;
+                  text-transform: uppercase;
+                  margin: 8px 0;
+                  padding: 10px 20px;
+                  text-decoration: none;
+                  color: ${isDark ? '#94a3b8' : '#475569'};
+                  font-family: 'Inter', sans-serif;
+                  font-size: 16px;
+                  font-weight: 600;
+                  transition: 0.5s;
+                  z-index: 2;
+                  cursor: pointer;
+                  border: none;
+                  background: transparent;
+                }
+
+                .nav-link:before {
+                  content: '';
+                  position: absolute;
+                  top: 0;
+                  left: 0;
+                  width: 100%;
+                  height: 100%;
+                  border-top: 2px solid ${isDark ? '#06b6d4' : '#0891b2'};
+                  border-bottom: 2px solid ${isDark ? '#06b6d4' : '#0891b2'};
+                  transform: scaleY(2);
+                  opacity: 0;
+                  transition: 0.3s;
+                  z-index: 0;
+                }
+
+                .nav-link:after {
+                  content: '';
+                  position: absolute;
+                  top: 2px;
+                  left: 0;
+                  width: 100%;
+                  height: calc(100% - 4px);
+                  background: ${isDark 
+                    ? 'linear-gradient(45deg, #06b6d4, #8b5cf6)'
+                    : 'linear-gradient(45deg, #0891b2, #7c3aed)'
+                  };
+                  transform: scaleY(0);
+                  opacity: 0;
+                  transition: 0.3s;
+                  z-index: -1;
+                }
+
+                .nav-link:hover {
+                  color: #ffffff;
+                }
+
+                .nav-link:hover:before {
+                  transform: scaleY(1);
+                  opacity: 1;
+                }
+
+                .nav-link:hover:after {
+                  transform: scaleY(1);
+                  opacity: 1;
+                }
+
+                .nav-link.active {
+                  color: ${isDark ? '#06b6d4' : '#0891b2'};
+                  font-weight: 700;
+                }
+
+                .nav-link.active:hover {
+                  color: #ffffff;
+                }
+
+                .nav-link.active:before {
+                  border-top-color: ${isDark ? '#06b6d4' : '#0891b2'};
+                  border-bottom-color: ${isDark ? '#06b6d4' : '#0891b2'};
+                  opacity: 0.3;
+                  transform: scaleY(1);
+                }
+
+                .nav-link.active:after {
+                  background: ${isDark 
+                    ? 'linear-gradient(45deg, rgba(6, 182, 212, 0.1), rgba(139, 92, 246, 0.1))'
+                    : 'linear-gradient(45deg, rgba(8, 145, 178, 0.1), rgba(124, 58, 237, 0.1))'
+                  };
+                  opacity: 0.6;
+                  transform: scaleY(1);
+                }
+
+                .nav-link.active:hover:after {
+                  background: ${isDark 
+                    ? 'linear-gradient(45deg, #06b6d4, #8b5cf6)'
+                    : 'linear-gradient(45deg, #0891b2, #7c3aed)'
+                  };
+                  opacity: 1;
+                }
+              `}</style>
+              
               {navigationItems.map((item) => (
                 <button
                   key={item.id}
                   onClick={() => scrollToSection(item.id)}
-                  className={`relative px-4 py-2 rounded-lg font-medium transition-all duration-300 ${
-                    activeSection === item.id
-                      ? isDark ? 'text-cyan-400' : 'text-cyan-600'
-                      : isDark 
-                        ? 'text-gray-300 hover:text-cyan-400'
-                        : 'text-gray-700 hover:text-cyan-600'
-                  }`}
+                  className={`nav-link ${activeSection === item.id ? 'active' : ''}`}
                 >
                   {item.label}
-                  {activeSection === item.id && (
-                    <motion.div
-                      layoutId="activeIndicator"
-                      className="absolute inset-0 bg-cyan-400/10 border border-cyan-400/30 rounded-lg"
-                    />
-                  )}
                 </button>
               ))}
             </div>
@@ -194,7 +281,7 @@ export default function Navigation() {
               animate={{ x: 0 }}
               exit={{ x: '100%' }}
               className={`absolute right-0 top-0 bottom-0 w-80 shadow-2xl transition-colors duration-300 ${
-                isDark ? 'bg-slate-900' : 'bg-white'
+                isDark ? 'bg-slate-900' : 'bg-slate-100'
               }`}
             >
               <div className="p-6">
@@ -205,7 +292,7 @@ export default function Navigation() {
                   <button
                     onClick={() => setIsMenuOpen(false)}
                     className={`p-2 rounded-lg transition-colors ${
-                      isDark ? 'hover:bg-slate-800' : 'hover:bg-slate-100'
+                      isDark ? 'hover:bg-slate-800' : 'hover:bg-slate-200'
                     }`}
                   >
                     <X size={24} />

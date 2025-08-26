@@ -7,6 +7,12 @@ export interface Experience {
   technologies: string[];
   logo?: string;
   website?: string;
+  location?: string;
+  achievements?: string[];
+  metrics?: {
+    label: string;
+    value: string;
+  }[];
 }
 
 export interface Project {

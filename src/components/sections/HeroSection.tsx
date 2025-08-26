@@ -103,18 +103,59 @@ export default function HeroSection() {
             transition={{ duration: 0.8 }}
             className="flex flex-col items-center lg:items-start text-center lg:text-left pt-8 sm:pt-0"
           >
-            {/* Profile Image */}
+            {/* Profile Image with Animated Outline */}
             <motion.div
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
               transition={{ delay: 0.2, duration: 0.6 }}
-              className="w-64 h-64 lg:w-80 lg:h-80 mb-8 rounded-full bg-gradient-to-r from-cyan-400 to-purple-500 p-1"
+              className="w-64 h-64 lg:w-80 lg:h-80 mb-8 relative flex items-center justify-center"
             >
-              <div className="w-full h-full rounded-full bg-slate-900 overflow-hidden relative">
+              <style jsx>{`
+                .profile-image-container {
+                  --s: 16rem; /* 256px - w-64 */
+                  --b: 8px;
+                  --g: 14px;
+                  --c: ${isDark ? '#06b6d4' : '#0891b2'};
+                  
+                  width: var(--s);
+                  aspect-ratio: 1;
+                  outline: calc(var(--s) / 2) solid rgba(0, 0, 0, 0.25);
+                  outline-offset: calc(var(--s) / -2);
+                  cursor: pointer;
+                  transition: 0.3s;
+                  border-radius: 50%;
+                  overflow: hidden;
+                  position: relative;
+                }
+
+                .profile-image-container:hover {
+                  outline: var(--b) solid var(--c);
+                  outline-offset: var(--g);
+                }
+
+                .profile-image-container.large {
+                  --s: 20rem; /* 320px - lg:w-80 */
+                }
+
+                @media (min-width: 1024px) {
+                  .profile-image-container {
+                    --s: 20rem;
+                  }
+                }
+
+                .profile-image {
+                  width: 100%;
+                  height: 100%;
+                  object-fit: cover;
+                  border-radius: 50%;
+                }
+              `}</style>
+
+              <div className="profile-image-container">
                 <img
                   src={getAssetPath(personalInfo.avatar)}
                   alt={personalInfo.name}
-                  className="w-full h-full object-cover rounded-full absolute inset-0 z-20"
+                  className="profile-image"
                   onError={(e) => {
                     // Hide broken image and show placeholder
                     console.log('Image failed to load:', personalInfo.avatar);
@@ -137,7 +178,7 @@ export default function HeroSection() {
                   }}
                 />
                 {/* Modern Placeholder - Shows when image fails to load */}
-                <div className="absolute inset-0 w-full h-full rounded-full bg-gradient-to-br from-slate-700 via-slate-800 to-slate-900 flex items-center justify-center overflow-hidden" style={{display: 'flex'}}>
+                <div className="absolute inset-0 w-full h-full rounded-full bg-gradient-to-br from-slate-700 via-slate-800 to-slate-900 flex items-center justify-center overflow-hidden" style={{display: 'none'}}>
                   {/* Animated Background Pattern */}
                   <div className="absolute inset-0 opacity-20">
                     <div className="absolute top-1/4 left-1/4 w-8 h-8 bg-cyan-400/30 rounded-full animate-pulse"></div>
@@ -379,7 +420,72 @@ export default function HeroSection() {
               }`}
             >
               <MapPin size={20} />
-              <span>{personalInfo.contact.location}</span>
+              <a 
+                href="#" 
+                className="location-hover-effect" 
+                data-replace="San Jose, CA"
+                onClick={(e) => e.preventDefault()}
+              >
+                <span>San Jose, CA</span>
+              </a>
+              <style jsx>{`
+                .location-hover-effect {
+                  overflow: hidden;
+                  position: relative;
+                  display: inline-block;
+                  text-decoration: none;
+                  color: inherit;
+                  font-weight: inherit;
+                  vertical-align: top;
+                }
+
+                .location-hover-effect::before,
+                .location-hover-effect::after {
+                  content: '';
+                  position: absolute;
+                  width: 100%;
+                  left: 0;
+                }
+
+                .location-hover-effect::before {
+                  background-color: ${isDark ? '#06b6d4' : '#0891b2'};
+                  height: 2px;
+                  bottom: 0;
+                  transform-origin: 100% 50%;
+                  transform: scaleX(0);
+                  transition: transform 0.3s cubic-bezier(0.76, 0, 0.24, 1);
+                }
+
+                .location-hover-effect::after {
+                  content: attr(data-replace);
+                  height: 100%;
+                  top: 0;
+                  transform-origin: 100% 50%;
+                  transform: translate3d(200%, 0, 0);
+                  transition: transform 0.3s cubic-bezier(0.76, 0, 0.24, 1);
+                  color: ${isDark ? '#06b6d4' : '#0891b2'};
+                  display: flex;
+                  align-items: center;
+                }
+
+                .location-hover-effect:hover::before {
+                  transform-origin: 0% 50%;
+                  transform: scaleX(1);
+                }
+
+                .location-hover-effect:hover::after {
+                  transform: translate3d(0, 0, 0);
+                }
+
+                .location-hover-effect span {
+                  display: inline-block;
+                  transition: transform 0.3s cubic-bezier(0.76, 0, 0.24, 1);
+                }
+
+                .location-hover-effect:hover span {
+                  transform: translate3d(-200%, 0, 0);
+                }
+              `}</style>
             </motion.div>
           </motion.div>
 
@@ -450,88 +556,183 @@ export default function HeroSection() {
               </button>
             </motion.div>
 
-            {/* Social Links */}
+            {/* Social Links - Animated Expansion Style */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 1.6, duration: 0.8 }}
-              className="flex flex-wrap justify-center lg:justify-start gap-4 mb-8 sm:mb-0"
+              className="flex flex-wrap justify-center lg:justify-start gap-6 mb-8 sm:mb-0"
             >
+              <style jsx>{`
+                .social-link {
+                  position: relative;
+                  list-style: none;
+                  width: 45px;
+                  height: 45px;
+                  background: ${isDark ? 'rgba(30, 41, 59, 0.8)' : 'rgba(241, 245, 249, 0.9)'};
+                  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+                  border-radius: 45px;
+                  cursor: pointer;
+                  display: flex;
+                  justify-content: center;
+                  align-items: center;
+                  transition: 0.5s;
+                  backdrop-filter: blur(10px);
+                }
+
+                .social-link::before {
+                  content: "";
+                  position: absolute;
+                  inset: 0;
+                  border-radius: 45px;
+                  background: var(--gradient);
+                  opacity: 0;
+                  transition: 0.5s;
+                }
+
+                .social-link::after {
+                  content: "";
+                  position: absolute;
+                  top: 8px;
+                  width: 100%;
+                  height: 100%;
+                  border-radius: 45px;
+                  background: var(--gradient);
+                  transition: 0.5s;
+                  filter: blur(12px);
+                  z-index: -1;
+                  opacity: 0;
+                }
+
+                .social-link:hover {
+                  width: 140px;
+                  box-shadow: 0 8px 20px rgba(0, 0, 0, 0);
+                }
+
+                .social-link:hover::before {
+                  opacity: 1;
+                }
+
+                .social-link:hover::after {
+                  opacity: 0.5;
+                }
+
+                .social-icon {
+                  color: ${isDark ? '#9ca3af' : '#6b7280'};
+                  font-size: 1.3em;
+                  transition: 0.5s;
+                  transition-delay: 0.25s;
+                  z-index: 10;
+                }
+
+                .social-link:hover .social-icon {
+                  transform: scale(0);
+                  color: #fff;
+                  transition-delay: 0s;
+                }
+
+                .social-title {
+                  position: absolute;
+                  color: #fff;
+                  font-size: 0.9em;
+                  letter-spacing: 0.05em;
+                  text-transform: uppercase;
+                  transform: scale(0);
+                  transition: 0.5s;
+                  transition-delay: 0s;
+                  font-weight: 600;
+                  z-index: 10;
+                  white-space: nowrap;
+                }
+
+                .social-link:hover .social-title {
+                  transform: scale(1);
+                  transition-delay: 0.25s;
+                }
+              `}</style>
+
               <a
                 href={personalInfo.contact.social.github}
                 target="_blank"
                 rel="noopener noreferrer"
-                className={`p-4 backdrop-blur-sm rounded-xl hover:scale-110 transition-all duration-300 ${
-                  isDark 
-                    ? 'bg-slate-800/70 hover:bg-slate-700 border border-slate-700 hover:border-cyan-400/50' 
-                    : 'bg-slate-100/80 hover:bg-slate-200/90 border border-slate-200 hover:border-cyan-500/60'
-                }`}
+                className="social-link"
+                style={{ '--gradient': 'linear-gradient(45deg, #24292e, #6f42c1)' } as any}
               >
-                <AnimatedGitHub size={24} color={isDark ? "#06b6d4" : "#0891b2"} />
+                <div className="social-icon">
+                  <AnimatedGitHub size={20} />
+                </div>
+                <span className="social-title">GitHub</span>
               </a>
+
               <a
                 href={personalInfo.contact.social.linkedin}
                 target="_blank"
                 rel="noopener noreferrer"
-                className={`p-4 backdrop-blur-sm rounded-xl hover:scale-110 transition-all duration-300 ${
-                  isDark 
-                    ? 'bg-slate-800/70 hover:bg-slate-700 border border-slate-700 hover:border-cyan-400/50' 
-                    : 'bg-slate-100/80 hover:bg-slate-200/90 border border-slate-200 hover:border-cyan-500/60'
-                }`}
+                className="social-link"
+                style={{ '--gradient': 'linear-gradient(45deg, #0077b5, #00a0dc)' } as any}
               >
-                <AnimatedLinkedIn size={24} color={isDark ? "#06b6d4" : "#0891b2"} />
+                <div className="social-icon">
+                  <AnimatedLinkedIn size={20} />
+                </div>
+                <span className="social-title">LinkedIn</span>
               </a>
+
               {personalInfo.contact.social.twitter && (
                 <a
                   href={personalInfo.contact.social.twitter}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className={`p-4 backdrop-blur-sm rounded-xl hover:scale-110 transition-all duration-300 ${
-                    isDark 
-                      ? 'bg-slate-800/70 hover:bg-slate-700 border border-slate-700 hover:border-cyan-400/50' 
-                      : 'bg-slate-100/80 hover:bg-slate-200/90 border border-slate-200 hover:border-cyan-500/60'
-                  }`}
+                  className="social-link"
+                  style={{ '--gradient': 'linear-gradient(45deg, #000000, #333333)' } as any}
                 >
-                  <AnimatedTwitter size={24} color={isDark ? "#06b6d4" : "#0891b2"} />
+                  <div className="social-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                    </svg>
+                  </div>
+                  <span className="social-title">X</span>
                 </a>
               )}
+
               {personalInfo.contact.social.instagram && (
                 <a
                   href={personalInfo.contact.social.instagram}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className={`p-4 backdrop-blur-sm rounded-xl hover:scale-110 transition-all duration-300 ${
-                    isDark 
-                      ? 'bg-slate-800/70 hover:bg-slate-700 border border-slate-700 hover:border-cyan-400/50' 
-                      : 'bg-slate-100/80 hover:bg-slate-200/90 border border-slate-200 hover:border-cyan-500/60'
-                  }`}
+                  className="social-link"
+                  style={{ '--gradient': 'linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888)' } as any}
                 >
-                  <AnimatedInstagram size={24} color={isDark ? "#06b6d4" : "#0891b2"} />
+                  <div className="social-icon">
+                    <AnimatedInstagram size={20} />
+                  </div>
+                  <span className="social-title">Instagram</span>
                 </a>
               )}
+
               {personalInfo.contact.social.leetcode && (
                 <a
                   href={personalInfo.contact.social.leetcode}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className={`p-4 backdrop-blur-sm rounded-xl hover:scale-110 transition-all duration-300 ${
-                    isDark 
-                      ? 'bg-slate-800/70 hover:bg-slate-700 border border-slate-700 hover:border-cyan-400/50' 
-                      : 'bg-slate-100/80 hover:bg-slate-200/90 border border-slate-200 hover:border-cyan-500/60'
-                  }`}
+                  className="social-link"
+                  style={{ '--gradient': 'linear-gradient(45deg, #ffa116, #f89500)' } as any}
                 >
-                  <AnimatedCode size={24} color={isDark ? "#06b6d4" : "#0891b2"}  />
+                  <div className="social-icon">
+                    <AnimatedCode size={20} />
+                  </div>
+                  <span className="social-title">LeetCode</span>
                 </a>
               )}
+
               <a
                 href={`mailto:${personalInfo.contact.email}`}
-                className={`p-4 backdrop-blur-sm rounded-xl hover:scale-110 transition-all duration-300 ${
-                  isDark 
-                    ? 'bg-slate-800/70 hover:bg-slate-700 border border-slate-700 hover:border-cyan-400/50' 
-                    : 'bg-slate-100/80 hover:bg-slate-200/90 border border-slate-200 hover:border-cyan-500/60'
-                }`}
+                className="social-link"
+                style={{ '--gradient': 'linear-gradient(45deg, #ea4335, #fbbc05, #34a853, #4285f4)' } as any}
               >
-                <AnimatedMail size={24} color={isDark ? "#06b6d4" : "#0891b2"} />
+                <div className="social-icon">
+                  <AnimatedMail size={20} />
+                </div>
+                <span className="social-title">Email</span>
               </a>
             </motion.div>
           </motion.div>

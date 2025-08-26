@@ -25,8 +25,21 @@ export const experiences: Experience[] = [
     title: "Software Development Engineer",
     company: "ModelEarth",
     period: "JULY 2025 — PRESENT",
+    location: "San Jose, CA (Remote)",
     description: "Built enterprise-grade AI chat platform with 1,700+ files across Node.js/React/Python/Rust stack. Integrated 25+ LLM providers, 9 vector databases, and comprehensive document processing pipeline supporting PDF/audio/video formats.",
     technologies: ["Node.js", "React", "Python", "Rust", "Docker", "Kubernetes", "AWS", "GCP", "Azure"],
+    achievements: [
+      "Architected scalable AI chat platform supporting 25+ LLM providers",
+      "Implemented comprehensive document processing pipeline for PDF/audio/video",
+      "Built robust system handling 1,700+ files across multiple tech stacks",
+      "Established multi-cloud deployment strategy across AWS, GCP, and Azure"
+    ],
+    metrics: [
+      { label: "LLM Providers", value: "25+" },
+      { label: "Vector DBs", value: "9" },
+      { label: "File Processing", value: "1,700+" },
+      { label: "Cloud Platforms", value: "3" }
+    ],
     logo: "/logos/modelearth.png",
     website: "https://model.earth"
   },
@@ -35,8 +48,21 @@ export const experiences: Experience[] = [
     title: "Graduate Teaching Assistant",
     company: "University of Massachusetts Boston",
     period: "SEPT 2024 — MAY 2025",
+    location: "Boston, MA",
     description: "Led 8 cohorts (90+ students) through advanced circuit analysis and MATLAB simulations. Provided actionable feedback on 70+ lab reports within 24 hours, improving problem-solving skills for 85% of student pairs.",
     technologies: ["MATLAB", "Multisim", "Circuit Analysis", "Teaching"],
+    achievements: [
+      "Successfully mentored 90+ students across 8 different cohorts",
+      "Maintained 24-hour turnaround time for lab report feedback",
+      "Improved problem-solving skills for 85% of student pairs",
+      "Developed innovative teaching methodologies for circuit analysis"
+    ],
+    metrics: [
+      { label: "Students Taught", value: "90+" },
+      { label: "Cohorts Led", value: "8" },
+      { label: "Success Rate", value: "85%" },
+      { label: "Response Time", value: "24hrs" }
+    ],
     logo: "/logos/umb.png",
     website: "https://umb.edu"
   },
@@ -45,8 +71,22 @@ export const experiences: Experience[] = [
     title: "Software Engineer",
     company: "Tata Consultancy Services",
     period: "AUG 2022 — AUG 2023",
+    location: "Gurugram, India",
     description: "Engineered and shipped 7 Java/Spring features for a core banking platform; built 120+ JUnit tests and Jenkins CI pipelines to boost reliability, lifting daily transaction capacity by 35% and sustaining 99.9% uptime. Led zero-downtime migration from Oracle to PostgreSQL (20 GB), refactored 15K LOC reducing critical page loads by 4s and cutting licensing costs by 25%.",
     technologies: ["Java", "Spring", "SQL", "Jenkins", "JUnit"],
+    achievements: [
+      "Led zero-downtime migration from Oracle to PostgreSQL (20GB database)",
+      "Increased daily transaction capacity by 35% through optimization",
+      "Maintained 99.9% system uptime across critical banking operations",
+      "Reduced licensing costs by 25% through strategic database migration",
+      "Improved page load times by 4 seconds for critical user journeys"
+    ],
+    metrics: [
+      { label: "Uptime", value: "99.9%" },
+      { label: "Performance Boost", value: "35%" },
+      { label: "Cost Reduction", value: "25%" },
+      { label: "Data Migrated", value: "20GB" }
+    ],
     logo: "/logos/tcs.png",
     website: "https://www.tcs.com/what-we-do/products-platforms/tcs-bancs"
   }
