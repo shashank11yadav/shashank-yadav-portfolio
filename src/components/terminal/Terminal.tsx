@@ -616,43 +616,39 @@ const COMMANDS = (isDark: boolean) => ({
     execute: () => (
       <div className="space-y-2">
         <div className={`font-semibold ${isDark ? 'text-cyan-300' : 'text-cyan-600'}`}>📊 Running Processes</div>
+        
+        {/* Unified layout for all screen sizes */}
         <div className="font-mono text-xs space-y-1">
-          <div className={`grid grid-cols-4 gap-4 border-b pb-1 ${isDark ? 'text-gray-400 border-gray-600' : 'text-gray-600 border-gray-400'}`}>
-            <span>PID</span>
-            <span>PROCESS</span>
-            <span>CPU%</span>
-            <span>STATUS</span>
+          {/* Header with limited width border */}
+          <div className="py-1 pb-1">
+            <div className={`grid grid-cols-4 gap-4 border-b pb-1 ${isDark ? 'text-gray-400 border-gray-600' : 'text-gray-600 border-gray-400'}`} style={{gridTemplateColumns: 'auto auto auto auto', width: 'fit-content'}}>
+              <span className="min-w-[3rem]">PID</span>
+              <span className="min-w-[7rem] sm:min-w-[9rem]">PROCESS</span>
+              <span className="min-w-[3.5rem]">CPU%</span>
+              <span className="min-w-[4rem]">STATUS</span>
+            </div>
           </div>
-          <div className={`grid grid-cols-4 gap-4 ${isDark ? 'text-green-400' : 'text-green-600'}`}>
-            <span>1337</span>
-            <span>awesome_portfolio</span>
-            <span>98.5%</span>
-            <span>Running</span>
-          </div>
-          <div className={`grid grid-cols-4 gap-4 ${isDark ? 'text-blue-400' : 'text-blue-600'}`}>
-            <span>2048</span>
-            <span>skill_renderer</span>
-            <span>15.2%</span>
-            <span>Active</span>
-          </div>
-          <div className={`grid grid-cols-4 gap-4 ${isDark ? 'text-purple-400' : 'text-purple-500'}`}>
-            <span>4096</span>
-            <span>3d_animations</span>
-            <span>22.8%</span>
-            <span>Running</span>
-          </div>
-          <div className={`grid grid-cols-4 gap-4 ${isDark ? 'text-yellow-400' : 'text-yellow-600'}`}>
-            <span>8192</span>
-            <span>terminal_cli</span>
-            <span>5.1%</span>
-            <span>Active</span>
-          </div>
-          <div className={`grid grid-cols-4 gap-4 ${isDark ? 'text-cyan-400' : 'text-cyan-600'}`}>
-            <span>1024</span>
-            <span>coffee_maker</span>
-            <span>0.0%</span>
-            <span>Sleeping</span>
-          </div>
+          
+          {/* Process Rows */}
+          {[
+            { pid: '1337', process: 'portfolio', fullProcess: 'awesome_portfolio', cpu: '98.5%', status: 'Running', color: 'text-green-400' },
+            { pid: '2048', process: 'skills', fullProcess: 'skill_renderer', cpu: '15.2%', status: 'Active', color: 'text-blue-400' },
+            { pid: '4096', process: '3d_anim', fullProcess: '3d_animations', cpu: '22.8%', status: 'Running', color: 'text-purple-400' },
+            { pid: '8192', process: 'terminal', fullProcess: 'terminal_cli', cpu: '5.1%', status: 'Active', color: 'text-yellow-400' },
+            { pid: '1024', process: 'coffee', fullProcess: 'coffee_maker', cpu: '0.0%', status: 'Sleep', color: 'text-cyan-400' }
+          ].map((proc, index) => (
+            <div key={index} className={`grid grid-cols-4 gap-4 py-1 ${
+              isDark ? proc.color : proc.color.replace('-400', '-600')
+            }`} style={{gridTemplateColumns: 'auto auto auto auto', width: 'fit-content'}}>
+              <span className="min-w-[3rem]">{proc.pid}</span>
+              <span className="min-w-[7rem] sm:min-w-[9rem] truncate">
+                <span className="sm:hidden">{proc.process}</span>
+                <span className="hidden sm:inline">{proc.fullProcess}</span>
+              </span>
+              <span className="min-w-[3.5rem]">{proc.cpu}</span>
+              <span className="min-w-[4rem]">{proc.status}</span>
+            </div>
+          ))}
         </div>
       </div>
     )
@@ -969,24 +965,40 @@ export default function Terminal() {
       <motion.button
         onClick={() => setState(prev => ({ 
           ...prev, 
-          isOpen: true, 
+          isOpen: !prev.isOpen, 
           isMinimized: false 
         }))}
         className={`fixed bottom-6 right-6 z-50 backdrop-blur-sm border rounded-full p-4 transition-all duration-300 group shadow-xl ${
-          isDark 
-            ? 'bg-slate-900/90 border-slate-600 hover:bg-slate-800/90'
-            : 'bg-slate-100/90 border-slate-300 hover:bg-slate-200/90'
+          state.isOpen
+            ? isDark 
+              ? 'bg-red-900/90 border-red-600 hover:bg-red-800/90'
+              : 'bg-red-100/90 border-red-300 hover:bg-red-200/90'
+            : isDark 
+              ? 'bg-slate-900/90 border-slate-600 hover:bg-slate-800/90'
+              : 'bg-slate-100/90 border-slate-300 hover:bg-slate-200/90'
         }`}
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.9 }}
-        title="Open Terminal (Ctrl + `)"
+        title={state.isOpen ? "Close Terminal" : "Open Terminal (Ctrl + \\`)"}
       >
-        <TerminalIcon className={`w-6 h-6 transition-colors ${
-          isDark 
-            ? 'text-cyan-400 group-hover:text-cyan-300' 
-            : 'text-cyan-600 group-hover:text-cyan-700'
-        }`} />
-        <div className="absolute -top-2 -right-2 w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
+        {state.isOpen ? (
+          <X className={`w-6 h-6 transition-colors ${
+            isDark 
+              ? 'text-red-400 group-hover:text-red-300' 
+              : 'text-red-600 group-hover:text-red-700'
+          }`} />
+        ) : (
+          <TerminalIcon className={`w-6 h-6 transition-colors ${
+            isDark 
+              ? 'text-cyan-400 group-hover:text-cyan-300' 
+              : 'text-cyan-600 group-hover:text-cyan-700'
+          }`} />
+        )}
+        <div className={`absolute -top-2 -right-2 w-3 h-3 rounded-full transition-colors ${
+          state.isOpen 
+            ? 'bg-red-500 animate-pulse' 
+            : 'bg-green-500 animate-pulse'
+        }`}></div>
       </motion.button>
 
       {/* Terminal Window */}
@@ -1014,12 +1026,12 @@ export default function Terminal() {
             }}
           >
             {/* Terminal Header */}
-            <div className={`flex items-center justify-between px-6 py-4 border-b transition-colors duration-300 ${
+            <div className={`flex items-center justify-between px-3 sm:px-6 py-4 border-b transition-colors duration-300 ${
               isDark 
                 ? 'bg-slate-900/80 border-slate-700'
                 : 'bg-slate-100/80 border-slate-300'
             }`}>
-              <div className="flex items-center gap-4">
+              <div className="flex items-center gap-2 sm:gap-4 min-w-0">
                 <div className="flex gap-2">
                   <div className={`w-3 h-3 rounded-full transition-colors duration-300 ${
                     isDark ? 'bg-red-500' : 'bg-red-600'
@@ -1031,19 +1043,20 @@ export default function Terminal() {
                     isDark ? 'bg-green-500' : 'bg-green-600'
                   }`}></div>
                 </div>
-                <div className="flex items-center gap-2">
-                  <TerminalIcon className={`w-5 h-5 transition-colors duration-300 ${
+                <div className="flex items-center gap-2 min-w-0">
+                  <TerminalIcon className={`w-4 h-4 sm:w-5 sm:h-5 transition-colors duration-300 flex-shrink-0 ${
                     isDark ? 'text-cyan-400' : 'text-cyan-600'
                   }`} />
-                  <span className={`font-mono font-semibold transition-colors duration-300 ${
+                  <span className={`font-mono font-semibold transition-colors duration-300 text-sm sm:text-base truncate ${
                     isDark ? 'text-gray-200' : 'text-gray-800'
                   }`}>
-                    shashank@portfolio-terminal
+                    <span className="hidden sm:inline">shashank@portfolio-terminal</span>
+                    <span className="sm:hidden">terminal</span>
                   </span>
                 </div>
               </div>
               
-              <div className="flex items-center gap-1">
+              <div className="flex items-center gap-1 flex-shrink-0">
                 <button
                   onClick={() => setState(prev => ({ ...prev, isOpen: false }))}
                   className={`p-2 hover:bg-red-600 rounded-md transition-colors ${
@@ -1065,7 +1078,7 @@ export default function Terminal() {
                 <div 
                   ref={outputRef}
                   className="flex-1 p-6 overflow-y-auto font-mono text-sm leading-relaxed space-y-4"
-                  style={{ maxHeight: 'calc(100% - 120px)' }}
+                  style={{ maxHeight: 'calc(100% - 160px)' }}
                 >
                   {state.history.map((cmd, index) => (
                     <motion.div

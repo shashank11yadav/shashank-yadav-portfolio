@@ -263,15 +263,22 @@ function ModernExperienceCard({
         </motion.div>
 
         {/* Description */}
-        <motion.p 
+        <motion.div 
           className={`mb-4 leading-relaxed transition-colors duration-300 ${
             isDark ? 'text-gray-300' : 'text-gray-600'
           }`}
-          initial={{ height: isActive ? 'auto' : '60px' }}
-          animate={{ height: isActive ? 'auto' : '60px' }}
         >
-          {experience.description}
-        </motion.p>
+          <p 
+            className={`${!isActive ? 'overflow-hidden' : ''}`}
+            style={!isActive ? {
+              display: '-webkit-box',
+              WebkitLineClamp: 3,
+              WebkitBoxOrient: 'vertical'
+            } : {}}
+          >
+            {experience.description}
+          </p>
+        </motion.div>
 
         {/* Expandable content */}
         <AnimatePresence>
@@ -564,7 +571,7 @@ export default function ExperienceSection() {
           
           {/* Interactive stats */}
           <motion.div
-            className="flex justify-center gap-8 mt-8"
+            className="flex justify-center gap-3 sm:gap-6 md:gap-8 mt-8"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.5, duration: 0.6 }}
@@ -577,7 +584,7 @@ export default function ExperienceSection() {
               <div key={stat.label} className="holographic-container">
                 <div className={`holographic-card holographic-card-${index}`}>
                   <div className="holographic-content">
-                    <stat.icon className="holographic-icon" size={32} />
+                    <stat.icon className="holographic-icon" size={24} />
                     <div className="holographic-value">{stat.value}</div>
                     <div className="holographic-label">{stat.label}</div>
                   </div>
@@ -591,8 +598,8 @@ export default function ExperienceSection() {
                   }
 
                   .holographic-card {
-                    width: 160px;
-                    height: 130px;
+                    width: 95px;
+                    height: 100px;
                     background: ${isDark ? 'rgba(30, 41, 59, 0.8)' : 'rgba(248, 250, 252, 0.9)'};
                     display: flex;
                     justify-content: center;
@@ -616,7 +623,7 @@ export default function ExperienceSection() {
 
                   .holographic-icon {
                     color: ${isDark ? '#06b6d4' : '#0891b2'};
-                    margin-bottom: 8px;
+                    margin-bottom: 6px;
                     filter: drop-shadow(0 0 8px ${isDark ? 'rgba(6, 182, 212, 0.6)' : 'rgba(8, 145, 178, 0.6)'});
                     display: flex;
                     justify-content: center;
@@ -628,7 +635,7 @@ export default function ExperienceSection() {
                     -webkit-background-clip: text;
                     -webkit-text-fill-color: transparent;
                     background-clip: text;
-                    font-size: 1.75rem;
+                    font-size: 1.5rem;
                     font-weight: 700;
                     margin-bottom: 2px;
                     filter: drop-shadow(0 0 10px ${isDark ? 'rgba(6, 182, 212, 0.4)' : 'rgba(8, 145, 178, 0.4)'});
@@ -636,10 +643,12 @@ export default function ExperienceSection() {
 
                   .holographic-label {
                     color: ${isDark ? '#94a3b8' : '#64748b'};
-                    font-size: 0.8rem;
+                    font-size: 0.7rem;
                     font-weight: 500;
                     opacity: 0.9;
-                    line-height: 1.2;
+                    line-height: 1.1;
+                    text-align: center;
+                    padding: 0 2px;
                   }
 
                   .holographic-card::before {
@@ -685,6 +694,49 @@ export default function ExperienceSection() {
                   .holographic-card:hover .holographic-label {
                     color: ${isDark ? '#06b6d4' : '#0891b2'};
                     transform: translateY(-2px);
+                  }
+
+                  @media (min-width: 640px) {
+                    .holographic-card {
+                      width: 120px;
+                      height: 115px;
+                    }
+                    .holographic-value {
+                      font-size: 1.625rem;
+                    }
+                    .holographic-label {
+                      font-size: 0.75rem;
+                    }
+                  }
+
+                  @media (min-width: 768px) {
+                    .holographic-card {
+                      width: 160px;
+                      height: 130px;
+                    }
+                    .holographic-value {
+                      font-size: 1.75rem;
+                    }
+                    .holographic-label {
+                      font-size: 0.8rem;
+                    }
+                    .holographic-icon {
+                      margin-bottom: 8px;
+                    }
+                  }
+
+                  @media (min-width: 640px) {
+                    .holographic-icon svg {
+                      width: 28px;
+                      height: 28px;
+                    }
+                  }
+
+                  @media (min-width: 768px) {
+                    .holographic-icon svg {
+                      width: 32px;
+                      height: 32px;
+                    }
                   }
                 `}</style>
               </div>

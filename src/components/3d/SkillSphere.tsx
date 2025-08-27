@@ -172,7 +172,7 @@ export default function SkillSphere({ className = "" }: SkillSphereProps) {
         </div>
       </div>
       
-      <div className="absolute top-4 left-4">
+      <div className="absolute bottom-4 left-4">
         <div className={`text-xs px-3 py-2 rounded-lg backdrop-blur-sm transition-colors duration-300 ${
           isDark 
             ? 'text-gray-400 bg-slate-800/70' 
