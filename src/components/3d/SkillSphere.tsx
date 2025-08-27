@@ -167,18 +167,8 @@ export default function SkillSphere({ className = "" }: SkillSphereProps) {
             ? 'text-gray-400 bg-slate-800/70' 
             : 'text-gray-600 bg-white/70'
         }`}>
-          🎯 Interactive 3D Skills<br/>
-          Drag to rotate • Scroll to zoom
-        </div>
-      </div>
-      
-      <div className="absolute bottom-4 left-4">
-        <div className={`text-xs px-3 py-2 rounded-lg backdrop-blur-sm transition-colors duration-300 ${
-          isDark 
-            ? 'text-gray-400 bg-slate-800/70' 
-            : 'text-gray-600 bg-white/70'
-        }`}>
-          All {allSkills.length} Skills • Hover for details
+          🎯 Interactive 3D Skills ({allSkills.length} Total)<br/>
+          Drag to rotate • Scroll to zoom • Hover for details
         </div>
       </div>
     </div>
